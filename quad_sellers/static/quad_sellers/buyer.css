@@ -1,0 +1,79 @@
+/* Instructions Specific */
+section{
+    min-height: 330px;
+}
+/* Buyer Page Specific */
+
+/* General Buyer */
+table{
+    margin-left: 43px;
+    width: 265px;
+}
+table th{
+    white-space:nowrap;
+    font-size:13px;
+    padding: 6px 6px 4px;
+}
+table th:first-child{
+    white-space:normal;
+    font-weight: normal;
+    width: 76px;
+    font-size:11px;
+}
+
+.col:last-child{
+    margin-right: -43px;
+}
+td label{
+    color: #888;
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0 10px 0 0;
+    min-width: 16px;
+    text-align: right;
+}
+td{
+    padding: 4px .625em 1px;
+}
+td:first-child label{
+    font-size:12.5px;
+}
+#buyer-choice-radios{
+    float: left;
+    position: relative;
+    width: 333px;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+#buyer-choice-radios .controls{
+    border: 1px solid #5b616b;
+    float: left;
+    position: relative;
+    width: 100%;
+    border-radius: 4px;
+}
+.field-contract_seller_rolenum input{
+    cursor: pointer;
+}
+.field-contract_seller_rolenum label{
+    position: relative;
+    float: left;
+    /*background-color: #bbb;*/
+    padding: 8px 5px;
+    border-left: 1px solid #5b616b;
+    cursor: pointer;
+    font-size:19px;
+    margin: 0;
+    background-color: #DBEDD4;
+}
+.field-contract_seller_rolenum label:hover{
+    /*background-color: #ccc;*/
+    background-color: #ADDC91;
+}
+.field-contract_seller_rolenum label:first-child{
+    border:none;
+}
+
+p{
+    min-width: 405px;
+}

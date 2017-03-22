@@ -1,0 +1,21 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+	Seller Instructions Comprehension
+{% endblock %}
+
+{% block content %}
+
+    {% if player.quiz_q2 == correct_answer %}
+        <h3>Correct!</h3>
+    {% else %}
+        <h3>The correct answer is: "It depends on the prices that I set".</h3>
+    {% endif %}
+    <p>
+        Remember that you will receive tokens according to the prices you set. In the case of a sale, the higher the price, the more tokens you will receive.
+    </p>
+
+    <button class="a-btn next">Next</button>
+
+{% endblock %}

@@ -1,0 +1,182 @@
+{% load staticfiles otree_tags %}
+
+
+<div class="results">
+<div class="col_container">
+    <div class="col">
+        <div class="earnings_prose">
+            <p>
+                This round you were {{ player.roledesc }} {{ player.rolenum }} and earned {{ player.payoff_marginal }} tokens.
+            </p>
+            {% if player.roledesc == "Buyer" %}
+                <p>
+                    You purchased an object from Seller {{ player.contract_seller_rolenum }} for {{ player.bid_total }} tokens, and you exchanged your object for {{ Constants.consbenefit }} tokens.
+                </p>
+            {% else %}
+                <p>
+                    You sold {{ player.numsold }} object{{ player.numsold | pluralize }} for {{ player.ask_total }} tokens each.
+                </p><p>
+                    Your total production cost was {{ prodcost }} tokens.
+                </p>
+            {% endif %}
+            <p>
+                Your earnings are itemized in the table below.
+            </p>
+        </div>
+    
+        <div class="table_container">
+            <h2>Your Earnings</h2>
+            {% if player.roledesc == "Buyer" %}
+            <table class="earnings"><tbody>
+                <tr>
+                    <td>Benefit</td><td>{{ Constants.consbenefit }}</td>
+                </tr><tr>
+                    <td>Cost</td><td>-{{ player.bid_total }}</td>
+                </tr><tr class="total">
+                    <td>Total </td><td>{{ player.payoff_marginal }}tokens</td>
+                </tr>
+            </tbody></table>
+            {% else %}
+            <table class="earnings">
+                <thead><tr>
+                    <th></th>
+                    <th>Value</th>
+                    <th># sold</th>
+                    <th>Totals</th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+                        <td>Benefit</td><td>{{ player.ask_total }}</td>
+                        <td>x {{ player.numsold }}</td>
+                        <td> {{ benefit }}</td>
+                    </tr>
+                    <tr>
+                        <td>Cost</td><td>-{{ Constants.prodcost }}</td>
+                        <td> x {{ player.numsold }}</td>
+                        <td> {% if prodcost > 0 %} -{{ prodcost }} {% else %} 0 {% endif %}</td>
+                    </tr>
+
+                    <tr class="total">
+                        <td>Total</td>
+                        <td>{{ subtotal }}</td>
+                        <td> x {{ player.numsold }}</td>
+                        <td>{{ player.payoff_marginal }}tokens</td>
+                    </tr>
+            </tbody></table>
+            {% endif %}
+        </div>
+    
+        <div class="table_container">
+            <h2>Buyers' Choices</h2>
+            <table>
+                <thead><tr>
+                    <th></th><th>Seller 1</th><th>Seller 2</th>{% if subsession.sellers == 4 %}<th>Seller 3</th><th>Seller 4</th>{% endif %}
+                </tr></thead>
+                <tbody>
+                    <tr>
+                        <td>Buyer 1</td>
+                        <td align="center">{% if b1_seller == 1 %}X{% endif %}</td>
+                        <td align="center">{% if b1_seller == 2 %}X{% endif %}</td>
+                        {% if subsession.sellers == 4 %}
+                        <td align="center">{% if b1_seller == 3 %}X{% endif %}</td>
+                        <td align="center">{% if b1_seller == 4 %}X{% endif %}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Buyer 2</td>
+                        <td align="center">{% if b2_seller == 1 %}X{% endif %}</td>
+                        <td align="center">{% if b2_seller == 2 %}X{% endif %}</td>
+                        {% if subsession.sellers == 4 %}
+                        <td align="center">{% if b2_seller == 3 %}X{% endif %}</td>
+                        <td align="center">{% if b2_seller == 4 %}X{% endif %}</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col">
+        <h2>Sellers' Prices</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ subsession.dims | pluralize:",Sub-price" }}</th>
+                    <th>Seller 1</th><th>Seller 2</th>{% if subsession.sellers == 4 %}<th>Seller 3</th><th>Seller 4</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+            {% if subsession.dims > 1 %}
+                {% if subsession.sellers == 2 %}
+                    {% for i, s1_pd, s2_pd in prices %}
+                        <tr>
+                            <td>
+                                <label>{{ i }}</label>
+                            </td>
+                            <td>
+                                <span class="pricedim">
+                                    {{ s1_pd }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="pricedim">
+                                    {{ s2_pd }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for i, s1_pd, s2_pd, s3_pd, s4_pd in prices %}
+                        <tr>
+                            <td>
+                                <label>{{ i }}</label>
+                            </td>
+                            <td>
+                                <span class="pricedim">
+                                    {{ s1_pd }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="pricedim">
+                                    {{ s2_pd }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="pricedim">
+                                    {{ s3_pd }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="pricedim">
+                                    {{ s4_pd }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+            <tr>
+                {% if subsession.dims > 1 %}
+                    <td>Total Price</td>
+                {% else %}
+                    <td>Price</td>
+                {% endif %}
+                <td>
+                    {{ s1_ask_total }} tokens
+                </td>
+                <td>
+                    {{ s2_ask_total }} tokens
+                </td>
+                {% if subsession.sellers == 4 %}
+                <td>
+                    {{ s3_ask_total }} tokens
+                </td>
+                <td>
+                    {{ s4_ask_total }} tokens
+                </td>
+                {% endif %}
+            </tr>
+        </tbody></table>
+    </div>
+</div>
+</div>

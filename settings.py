@@ -163,6 +163,22 @@ SESSION_CONFIGS = [
             'survey',
         ],
     },
+    {
+        'name': 'quad_sellers',
+        'display_name': "Two or Four Firm Oligopoly",
+        'num_demo_participants': 12,
+        'use_browser_bots' : False,
+        'app_sequence': [
+            'quad_sellers',
+            'survey'
+        ],
+        'treatmentorder': "4,2,3,1",
+        'participation_fee': 5,
+        'real_world_currency_per_point': (1.00/700),
+        'date': "20170317",
+        'time': "1430",
+        'experimenter_present': True, # set false to show "Next" button on ALL pages.
+    },
     # {
     #     'name': '...',
     #     'display_name': '...',
@@ -172,7 +188,7 @@ SESSION_CONFIGS = [
 
 ]
 
-ROOT_URLCONF = 'duopoly_rep_treat.urls'
+ROOT_URLCONF = 'quad_sellers.urls'
 POINTS_CUSTOM_NAME= ""
 
 # anything you put after the below line will override

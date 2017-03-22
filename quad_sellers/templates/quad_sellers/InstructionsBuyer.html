@@ -1,0 +1,75 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+    Buyer Instructions
+{% endblock %}
+
+{% block content %}
+    <div class="col_container">
+        <div class="col">
+            <section>
+                {% if subsession.round_number == 1 %}
+                    <p>
+                        A buyer earns tokens by buying an object from a seller and then giving it to the experimenter.
+                    </p>
+                    <p>
+                        The experimenter gives {{ Constants.consbenefit }} tokens for an object.
+                    </p><p>
+                        When you are a buyer, your only job is to choose whether you want to buy an object from Seller 1 or Seller 2.
+                    </p>
+                {% endif %}
+                {% if subsession.dims == 1 %}
+                    <p>
+                        As a buyer, after you choose a seller, you will pay the seller the seller's price.
+                    </p>
+                {% endif %}
+                <p>
+                    To the right is an example of a buyer's interface.
+                </p>
+
+            </section>
+            {% if subsession.dims > 1 %}
+                <section>
+                    <p>
+                        As you can see in the example interface, if you are a buyer, you will not see the sellers’ total prices.  Instead, you will see their sub-prices.
+                    </p>
+                    <p>
+                        After you choose a seller, you will pay the seller the sum of the seller’s sub-prices (the total price).
+                    </p>
+                </section>
+            {% endif %}
+            {% if subsession.round_number == 1 %}
+                <section>
+                    <p>
+                        After you buy an object, you will automatically give the object to the experimenter and get {{ Constants.consbenefit }} tokens.
+                    </p><p>
+                        Other than the price, it does not matter which seller you choose &mdash; the sellers' objects are the same in every way.
+                    </p>
+                </section>
+            {% endif %}
+            <section>
+                <p>
+                    Therefore, accounting for everything, within a given round, you will gain {{ Constants.consbenefit }} tokens and lose the {{ subsession.dims | pluralize:"price,total price" }} you pay for the object.
+                </p><p>
+                    Before continuing, please choose a seller in the example interface to the right.
+                </p>
+            </section>
+
+
+            <nav>
+                <input type="button" class="a-btn next" value="Next"></input>
+                <input type="button" class="a-btn prev" value="Previous" disabled="disabled"></input>
+                <input type="submit"></input>
+            </nav>
+        </div>
+        <div class="col">
+            {% include "quad_sellers/parts/buyerChoicePart.html" %}
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block app_styles %}
+   <link href="{% static "quad_sellers/buyer.css" %}" rel="stylesheet">
+{% endblock %}

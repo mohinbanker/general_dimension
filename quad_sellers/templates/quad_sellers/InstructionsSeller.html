@@ -1,0 +1,136 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+{% block title %}
+    Seller Instructions
+{% endblock %}
+{% block content %}
+    <div class="col_container">
+        <div class="col">
+            {% if subsession.round_number == 1  %}
+                <section>
+                    <p>
+                        Sellers earn tokens by producing objects and selling them to buyers.  When you are a seller, your only job is to set your {{ subsession.dims | pluralize:"price, sub-prices" }}.
+                    </p>
+                    <p>
+                        When a buyer chooses to buy an object from you, you will automatically produce it.  Since there are two buyers in your group, you can sell 0, 1, or 2 objects each round.
+                    </p>
+                </section>
+            {% endif %}
+            <section>
+                {% if subsession.round_number == 1  %}
+                    <p>
+                        When you are a seller, each object you sell will cost you 100 tokens to produce.  Your total earnings at the end of a round will therefore equal the tokens you received from buyers, minus your total production costs.
+                    </p>
+                {% endif %}
+                <p>
+                    This table summarizes what can happen each round:
+                </p>
+                <table class="seller_outcomes">
+                    <thead><tr>
+                        <th># Sold</th>
+                        <th>Received from Buyers</th>
+                        <th>Production Cost</th>
+                        <th>Total Earnings</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr><tr>
+                            <td>1</td>
+                            {% if subsession.dims > 1 %}
+                                <td>Sum of sub-prices ("Total price")</td>
+                            {% else %}
+                                <td>Price</td>
+                            {% endif %}
+                            <td>100</td>
+                            {% if subsession.dims > 1 %}
+                                <td>"Total price" - 100</td>
+                            {% else %}
+                                <td>Price - 100</td>
+                            {% endif %}
+                        </tr><tr>
+                            <td>2</td>
+                            {% if subsession.dims > 1 %}
+                                <td>2 x "Total price"</td>
+                            {% else %}
+                                <td>2 x Price</td>
+                            {% endif %}
+                            <td>200</td>
+                            {% if subsession.dims > 1 %}
+                                <td>2 x "Total price" - 200</td>
+                            {% else %}
+                                <td>2 x Price</td>
+                            {% endif %}
+                        </tr>
+                </tbody></table>
+            </section>
+            <section>
+                <p>
+                    {% if subsession.round_number == 1 %}
+                        Now we will go over how sellers set {{ subsession.dims | pluralize:"prices,sub-prices" }}.
+                    {% endif %}
+                    To the right is an example of a seller's interface. Feel free to enter prices there to see how it works.
+                </p>
+                <p>
+                    Things to keep in mind when setting prices:
+                </p>
+
+                <ol>
+                    <li>{{ subsession.dims | pluralize:"Prices,Sub-prices" }} must be whole numbers (no decimals).</li>
+                    <li>{{ subsession.dims | pluralize:"Prices,Sub-prices" }} cannot be negative.</li>
+                    <li>{{ subsession.dims | pluralize:"Prices,The total price (sum of sub-prices)" }} cannot exceed 800 tokens.</li>
+                    {% if subsession.dims > 1 %}
+                        <li>You must enter values for all sub-prices.</li>
+                    {% endif %}
+                </ol>
+
+            </section>
+            {% if subsession.dims > 1 %}
+                <section>
+                    <p>
+                        There are 2 ways to set sub-prices:
+                    </p>
+                    <ol>
+                        <li>Enter a total price in the “Total price” box and then press the “Distribute” button.  This will enter random sub-prices that sum to your total price.</li>
+                        <li>Type values for each sub-price.</li>
+
+                    </ol>
+                    <p>
+                        You can press the distribute button as many times as you like.
+                    </p>
+
+                    <p>
+                        You can edit individual sub-prices even if you already pressed the distribute button.
+                    </p>
+
+
+                </section>
+            {% endif %}
+            <section>
+                <p>
+                    Before continuing, please try to set the {{ subsession.dims | pluralize:"price,sub-prices" }} in the example interface to the right.
+                </p>
+            </section>
+            <nav>
+                <input type="button" class="a-btn next" value="Next"></input>
+                <input type="submit"></input>
+                <input type="button" class="a-btn prev" value="Previous" disabled="disabled"></input>
+            </nav>
+        </div>
+        <div class="col">
+            {% include "quad_sellers/parts/sellerChoicePart.html" with example="True" %}
+        </div>
+    </div>
+
+{% endblock %}
+{% block app_styles %}
+   <link href="{% static "quad_sellers/seller.css" %}" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'quad_sellers/utils.js' %}"></script>
+    <script type="text/javascript" src="{% static 'quad_sellers/seller.js' %}"></script>
+
+{% endblock %}

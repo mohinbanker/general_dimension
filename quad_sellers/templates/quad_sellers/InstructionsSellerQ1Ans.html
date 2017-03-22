@@ -1,0 +1,20 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+	Seller Instructions Comprehension
+{% endblock %}
+
+{% block content %}
+
+    {% if player.quiz_q1 == correct_answer %}
+        <h3>Correct!</h3>
+    {% else %}
+        <h3>The correct answer is "0 tokens".</h3>
+    {% endif %}
+    <p>Remember that you only receive tokens if you sell an object. If you do not sell to any buyers, you will receive 0 tokens.</p>
+
+    <button class="a-btn next">Next</button>
+
+{% endblock %}
+
