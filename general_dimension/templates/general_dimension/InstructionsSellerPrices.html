@@ -1,0 +1,63 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+    Seller Instructions
+{% endblock %}
+
+{% block content %}
+
+    <section>
+        <p>
+            Sellers must choose a price greater than or equal to {{ Constants.minprice }}
+            {% if subsession.dims > 1 %}
+                for each of the {{ subsession.dims }} price{{ subsession.dims |pluralize }}.  The sum of all the prices must also be less than or equal to {{ Constants.maxprice }} tokens.
+            {% else %}
+                and less than or equal to {{ Constants.maxprice }} tokens.
+            {% endif %}
+        </p>
+    </section>
+            <p>
+                An example of how you set your price{{ subsession.dims |pluralize }} as a seller is shown
+                {% if subsession.dims > 1 %}
+                    in the table to the right. You can set prices in one of three ways:
+                {% else %}
+                    to the right.
+                {% endif %}
+            </p>
+            {% if subsession.dims > 1 %}
+
+                <ol>
+                    <li>Enter the amount you want your prices to sum to in the "Sum of prices" box.  Then press the "Distribute" button to choose random prices that add up to your sum.
+                    </li>
+                    <li>Enter a price for each of the individual prices, one-by-one.</li>
+                    <li>Start by entering a sum into the "sum of prices" box, press distribute, and then change any of the individual prices as you like.  The "sum of prices" box will automatically update.</li>
+                </ol>
+                <p>Remember, when you set prices in the real game, <i>buyers will not see the sum of the prices</i>.  They will only the {{ subsession.dims }} price{{ subsession.dims |pluralize }} themselves.</p>
+            {% endif %}
+            <p>Now please try to set
+                {% if subsession.dims > 1 %}
+                    some prices
+                {% else %}
+                    a price
+                {% endif %}
+                in the example to right.  When you are done, press the "Next" button to continue.</p>
+        </div>
+        <div class="col">
+            {% include "quad_sellers/parts/sellerChoicePart.html" with example="True" %}
+        </div>
+<nav>
+    <input type="button" class="a-btn next" value="Next"></input>
+    <input type="button" class="a-btn prev" value="Previous" disabled="disabled"></input>
+</nav>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'general_dimension/utils.js' %}"></script>
+    <script type="text/javascript" src="{% static 'general_dimension/seller.js' %}"></script>
+
+{% endblock %}
+{% block app_styles %}
+   <link href="{% static "general_dimension/seller.css" %}" rel="stylesheet">
+{% endblock %}

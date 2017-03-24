@@ -1,0 +1,60 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+	Seller Instructions
+{% endblock %}
+
+{% block content %}
+
+	<div class="quiz_js">
+        <div class="question">
+            <h3>If a seller sells one object, what is the seller’s production cost?</h3>
+            <div class="controls">
+                <ul>
+                    <li>
+                        <label for="q1_1">
+                            <input type="radio" name="seller_q1" value="100 tokens" id="q1_1" required data-correct="true">
+                            100 tokens
+                        </label>
+                    </li>
+                    <li>
+                        <label for="q1_2"><input type="radio" name="seller_q1" value="200 tokens" id="q1_2" required >
+                            200 tokens
+                        </label>
+                    </li>
+                    {% if subsession.dims > 1 %}
+                        <li>
+                            <label for="q1_3"><input type="radio" name="seller_q1" value="dims x 100 tokens" id="q1_3" required>
+                                {{ subsession.dims }} x 100 tokens
+                            </label>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="answer">
+            <h2 class="correct">Correct!</h2>
+            <h2 class="incorrect">The correct answer is: 100 tokens.</h2>
+            <p>
+                {% if subsession.dims > 1 %}
+                    Remember, even though there are {{ subsession.dims }} sub-prices, these sub-prices are for a single object. Every
+                {% else %}
+                    Remember, every
+                {% endif %}
+                object the seller sells results in 100 tokens in production costs.
+            </p>
+        </div>
+    </div>
+	<nav>
+        <input type="button" class="a-btn next" value="Next"></input>
+        <input type="submit"></input>
+    </nav>
+
+{% endblock %}
+{% block app_styles %}
+   <link href="{% static "general_dimension/quiz.css" %}" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'general_dimension/quiz.js' %}"></script>
+{% endblock %}

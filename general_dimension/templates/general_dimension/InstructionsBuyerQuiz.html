@@ -1,0 +1,53 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+	Buyer Instructions
+{% endblock %}
+
+{% block content %}
+
+	<div class="quiz_js">
+        <div class="question">
+            <h3>If a buyer chooses a seller with a {{ subsession.dims | pluralize:"price,total price" }}  of 300 tokens, how many tokens does the buyer earn that round?</h3>
+            <div class="controls">
+                <ul>
+                    <li>
+                        <label for="q1_1">
+                            <input type="radio" name="buyer_q1" value="300 tokens" id="q1_1" required>
+                            300 tokens
+                        </label>
+                    </li>
+                    <li>
+                        <label for="q1_2"><input type="radio" name="buyer_q1" value="500 tokens" id="q1_2" data-correct="true" required>
+                            {{ Constants.consbenefit | add:"-300" }} tokens
+                        </label>
+                    </li>
+                    <li>
+                        <label for="q1_3"><input type="radio" name="buyer_q1" value="800 tokens" id="q1_3" required>
+                            800 tokens
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="answer">
+            <h2 class="correct">Correct!</h2>
+            <h2 class="incorrect">The correct answer is: {{ Constants.consbenefit | add:"-300" }} tokens.</h2>
+            <p>
+                Remember, buyers always get {{ Constants.consbenefit }} tokens for their object at the end of the round.  Since the buyer in this example paid 300 tokens for the object, they are left with {{ Constants.consbenefit | add:"-300" }} tokens.
+            </p>
+        </div>
+    </div>
+	<nav>
+        <input type="button" class="a-btn next" value="Next"></input>
+        <input type="submit"></input>
+    </nav>
+
+{% endblock %}
+{% block app_styles %}
+   <link href="{% static "general_dimension/quiz.css" %}" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'general_dimension/quiz.js' %}"></script>
+{% endblock %}

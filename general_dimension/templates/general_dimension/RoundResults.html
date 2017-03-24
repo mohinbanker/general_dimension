@@ -1,0 +1,30 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+    {% if subsession.round_number <= Constants.num_rounds_practice %}
+        Round Results
+    {% else %}
+        Round Results
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% include "general_dimension/parts/roundResultPart.html" %}
+    <nav style="width:50%;
+        {% if subsession.dims > 12 %}margin-top:-73px;{% endif %}
+    ">
+        <button class="a-btn next">Next</button>
+        <input type="submit"></input>
+    </nav>
+{% endblock %}
+{% block app_styles %}
+   <link href="{% static "general_dimension/results.css" %}" rel="stylesheet">
+   
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,18 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+	Seller Instructions Comprehension
+{% endblock %}
+
+{% block content %}
+
+	<div class="quiz_hold">
+	    {% formfield player.quiz_q1 %}
+    </div>
+	<button class="a-btn next">Next</button>
+
+{% endblock %}
+{% block app_styles %}
+   <link href="{% static "general_dimension/quiz.css" %}" rel="stylesheet">
+{% endblock %}

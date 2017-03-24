@@ -1,0 +1,37 @@
+{% extends "global/Base.html" %}
+{% load staticfiles otree_tags %}
+
+{% block title %}
+    Round Summary Example
+{% endblock %}
+
+{% block content %}
+    <div class="col_container"><div class="col">
+        <p>
+            At the end of each round, you will see a screen that summarizes what happened in that round.
+        </p>
+        <p>
+            An example is shown below.
+        </p>
+        <p>
+            In this example, you were Seller 1, you set
+            {% if subsession.dims == 1 %}
+                 a price of
+            {% else %}
+                sub-prices that summed up to
+            {% endif %}
+            {{ s1_ask_total }} tokens, and Buyer 1 bought from you.  Therefore, you made {{ subtotal }} tokens in this round.
+        </p>
+
+    </div></div>
+    <hr />
+    {% include "general_dimension/parts/roundResultPart.html"%}
+    <nav>
+        <button class="a-btn next">Next</button>
+        <input type="submit"></input>
+    </nav>
+
+{% endblock %}
+{% block app_styles %}
+   <link href="{% static "general_dimension/results.css" %}" rel="stylesheet">
+{% endblock %}

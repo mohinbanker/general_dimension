@@ -1,0 +1,79 @@
+<table><tbody>
+
+
+<tr>
+    <td>
+        <h5>Contract Data</h5>
+    </td>
+    <td>
+        <a class="btn btn-info btn-sm" href="{% url 'contract_data_download' %}">download</a>
+        <a class="btn btn-info btn-sm" href="{% url 'contract_data_view' %}" target="_blank">view</a>
+    </td>
+</tr>
+
+<tr>
+    <td>
+        <h5>Market Data</h5>
+    </td>
+    <td>
+        <a class="btn btn-info btn-sm" href="{% url 'market_data_download' %}">download</a>
+        <a class="btn btn-info btn-sm" href="{% url 'market_data_view' %}" target="_blank">view</a>
+    </td>
+</tr>
+<tr>
+     <td>
+        <h5>Survey Data</h5>
+    </td>
+    <td>
+        <a class="btn btn-info btn-sm" href="{% url 'survey_data_download' %}">download</a>
+        <a class="btn btn-info btn-sm" href="{% url 'survey_data_view' %}" target="_blank">view</a>
+    </td>
+</tr>
+<tr>
+     <td>
+        <h3>Combined Data</h3>
+    </td>
+    <td>
+        <a class="btn btn-info btn-sm" href="{% url 'combined_data_download' %}">download</a>
+        <a class="btn btn-info btn-sm" href="{% url 'combined_data_view' %}" target="_blank">view</a>
+    </td>
+</tr>
+
+<tr><td><hr /></td></tr>
+<tr>
+    <td>
+        <h3>Ask Data</h3>
+    </td>
+    <td>
+        <a class="btn btn-info btn-sm" href="{% url 'ask_data_download' %}">download</a>
+        <a class="btn btn-info btn-sm" href="{% url 'ask_data_view' %}" target="_blank">view</a>
+    </td>
+</tr>
+<tr><td><hr /></td></tr>
+<tr>
+    <td>
+        <h3>Response Times</h3>
+    </td>
+    <td>
+        <a class="btn btn-info btn-sm" href="{% url 'ExportTimeSpent' %}">download</a>
+    </td>
+
+</tr>
+<tr><td><hr /></td></tr>
+<tr>
+     <td>
+        <h5>Codebook</h5>
+    </td>
+    <td>
+        <a class="btn btn-info btn-sm" href="{% url 'codebook_download' app_label='duopoly_rep_treat' %}">download</a>
+    </td>
+</tr>
+<!--<tr>-->
+     <!--<td>-->
+        <!--<h3>Payments</h3>-->
+    <!--</td>-->
+    <!--<td>-->
+        <!--<a class="btn btn-info btn-sm" href="{% url 'SessionPayments' session_code %}" target="_blank">view latest session</a>-->
+    <!--</td>-->
+<!--</tr>-->
+</tbody></table>

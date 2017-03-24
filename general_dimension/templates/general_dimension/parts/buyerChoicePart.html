@@ -1,0 +1,64 @@
+{% load staticfiles otree_tags %}
+
+{% if subsession.dims > 1 %}
+    <table id = "prices">
+        <thead>
+            <tr>
+                <th>Sub- Price</th>
+                {% for i in sellers %}
+                    <th>Seller {{ i }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for i, price_dim in prices %}
+            <tr>
+                <td>
+                    <label>{{ i }}</label>
+                </td>
+            {% for price_dim_i in price_dim %}
+                    <td>
+                        <span class="pricedim">
+                            {{ price_dim_i }}
+                        </span>
+                    </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody></table>
+{% else %}
+    <table id = "prices">
+        <thead>
+            <tr>
+            {% for i, price_dim in prices %}
+                <th>Seller {{ i }}</th>
+            {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for i, price_dim in prices %}
+                <td>
+                    Price
+                </td>
+                    {% for price_dim_i in price_dim %}
+                        <td>
+                            <span class="pricedim">
+                                {{ price_dim_i }}
+                            </span>
+                        </td>
+                    {% endfor %}
+                {% endfor %}
+            </tr>
+    </tbody></table>
+{% endif %}
+<div id="buyer-choice-radios" class="form-group required">
+    <!--<label for="id_contract_seller_rolenum" class="control-label">Choose a Seller</label>-->
+    <div class="controls field-contract_seller_rolenum">
+        {% for i in sellers %}
+            <label><input type = "radio" required = "" name = "contract_seller_rolenum" value = {{ i|stringformat:"i"}}>
+                Choose Seller {{ i }}
+            </label>
+        {% endfor %}
+    </div>
+</div>
