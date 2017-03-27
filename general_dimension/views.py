@@ -72,7 +72,6 @@ class InstructionsSeller(Page):
     def vars_for_template(self):
         return {'buyers_per_group': self.subsession.buyers,
             'num_other_sellers': self.subsession.sellers-1,
-            # 'num_prices' : self.subsession.dims,
             'production_cost' : Constants.prodcost,
             'price_dims': range(1, self.subsession.dims + 1)
                 }
@@ -177,10 +176,7 @@ class ChoiceSeller(Page):
         numtreatrounds = sum(Constants.num_rounds_treatment[:self.subsession.block - 1])
         roundnum = self.subsession.round_number - numpracticerounds - numtreatrounds
 
-        # round_temp = (self.subsession.round_number - Constants.num_rounds_practice) % Constants.num_rounds_treatment
-        # round = round_temp if round_temp > 0 else Constants.num_rounds_treatment
         return{
-            #'price_dims': self.player.pricedim_set.all()
             "price_dims": range(1, self.subsession.dims+1),
             "round": roundnum,
             "treatmentrounds": Constants.num_rounds_treatment[self.subsession.block - 1] 
@@ -210,20 +206,18 @@ class ChoiceBuyer(Page):
         return self.player.roledesc == "Buyer"
 
     def vars_for_template(self):
-        # round_temp = (self.subsession.round_number - Constants.num_rounds_practice) % Constants.num_rounds_treatment
-        # round = round_temp if round_temp > 0 else Constants.num_rounds_treatment
         numpracticerounds = sum(Constants.num_rounds_practice[:self.subsession.block])
         numtreatrounds = sum(Constants.num_rounds_treatment[:self.subsession.block - 1])
         roundnum = self.subsession.round_number - numpracticerounds - numtreatrounds
+
+        # Create a list of lists where each individual list contains price dimension i for every seller           
         price_dims = []
-        # Create a list of lists where each individual list is price dimension i for all sellers
         for i in range(self.subsession.sellers):
             role = "S" + str(i + 1)
             price_dims.append([pd.value for pd in self.group.get_player_by_role(role).get_ask().pricedim_set.all()])
 
         prices = list(zip(range(1, self.subsession.dims + 1), zip(*price_dims)))
-        # else:
-        #     prices = [[self.group.get_player_by_role("S1").ask_total, self.group.get_player_by_role("S2").ask_total]]
+
         return {
             "prices": prices,
             "round": roundnum,
@@ -331,6 +325,9 @@ class RoundResults(Page):
 
         prices = list(zip(range(1, self.subsession.dims + 1), zip(*price_dims)))  
 
+        # Matrix with rows representing buyers and columns representing sellers
+        # Value of 1 at (i, j) means buyer i bought a good from seller j
+        # Otherwise values are 0. 
         for i in range(self.subsession.buyers):
             role = "B" + str(i + 1)
             seller_rolenum = self.group.get_player_by_role(role).contract_seller_rolenum

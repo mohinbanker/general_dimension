@@ -27,11 +27,17 @@ class Constants(BaseConstants):
     # practicerounds: Whether there should be practice rounds for treatment i
     # num_rounds_treatment: Number of paid rounds for  treatment i
 
-    treatmentdims = [1, 16]
-    num_sellers = [2, 3]
-    num_buyers = [2, 1]
-    practicerounds = [True, True]
-    num_rounds_treatment = [1, 1]
+    #############################################################
+    treatmentdims = [16, 1, 8]                                  #
+    num_sellers = [2, 2, 2]                                     #
+    num_buyers = [2, 2, 2]                                      #
+    practicerounds = [True, True, True]                         #
+    num_rounds_treatment = [8, 8, 8]                            #
+    #############################################################
+    
+
+
+
     
     # Checking requirements
     assert(len(treatmentdims) == len(num_sellers))
@@ -150,6 +156,7 @@ class Subsession(BaseSubsession):
                 player.buyer_in_practice = False
                 player.seller_in_practice = False
                 player.role_in_practice = False
+        
         # Player objects don't carry over between rounds, so you have to retreive practice round attributes from previous round
         else:
             for player in self.get_players():
