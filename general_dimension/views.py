@@ -163,8 +163,8 @@ class ChoiceSeller(Page):
         return self.player.roledesc == "Seller"
 
     def vars_for_template(self):
-        numpracticerounds = sum([Constants.num_rounds_practice if x else 0 for x in Constants.practicerounds[: self.subsession.block]])
-        numtreatrounds = Constants.num_rounds_treatment * (self.subsession.block - 1)
+        numpracticerounds = sum(Constants.num_rounds_practice[:self.subsession.block])
+        numtreatrounds = sum(Constants.num_rounds_treatment[:self.subsession.block - 1])
         roundnum = self.subsession.round_number - numpracticerounds - numtreatrounds
 
         # round_temp = (self.subsession.round_number - Constants.num_rounds_practice) % Constants.num_rounds_treatment
@@ -172,7 +172,8 @@ class ChoiceSeller(Page):
         return{
             #'price_dims': self.player.pricedim_set.all()
             "price_dims": range(1, self.subsession.dims+1),
-            "round": roundnum
+            "round": roundnum,
+            "treatmentrounds": Constants.num_rounds_treatment[self.subsession.block - 1] 
         }
 
     def before_next_page(self):
@@ -201,9 +202,8 @@ class ChoiceBuyer(Page):
     def vars_for_template(self):
         # round_temp = (self.subsession.round_number - Constants.num_rounds_practice) % Constants.num_rounds_treatment
         # round = round_temp if round_temp > 0 else Constants.num_rounds_treatment
-        numpracticerounds = sum([Constants.num_rounds_practice if x else 0 for x in Constants.practicerounds[: self.subsession.block]])
-        # numpracticerounds = numpracticerounds(self.subsession.block - 1)
-        numtreatrounds = Constants.num_rounds_treatment * (self.subsession.block - 1)
+        numpracticerounds = sum(Constants.num_rounds_practice[:self.subsession.block])
+        numtreatrounds = sum(Constants.num_rounds_treatment[:self.subsession.block - 1])
         roundnum = self.subsession.round_number - numpracticerounds - numtreatrounds
         price_dims = []
         # Create a list of lists where each individual list is price dimension i for all sellers
@@ -217,7 +217,8 @@ class ChoiceBuyer(Page):
         return {
             "prices": prices,
             "round": roundnum,
-            "sellers": range(1, self.subsession.sellers + 1)
+            "sellers": range(1, self.subsession.sellers + 1),
+            "treatmentrounds": Constants.num_rounds_treatment[self.subsession.block - 1] 
         }
 
     def before_next_page(self):

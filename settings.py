@@ -183,7 +183,7 @@ SESSION_CONFIGS = [
         'name': 'general_dimension',
         'display_name': "Experiment",
         'num_demo_participants': 8,
-        'use_browser_bots' : True,
+        'use_browser_bots' : False,
         'app_sequence': [
             'general_dimension',
             'survey'
