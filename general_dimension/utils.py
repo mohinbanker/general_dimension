@@ -230,4 +230,4 @@ def get_example_prices(dims):
     else:
         raise ValueError('{} dimensions not supported'.format(dims))
 
-    return zip(range(1, dims + 1), s1_pd, s2_pd)
+    return list(zip(range(1, dims + 1), zip(*[s1_pd, s2_pd])))

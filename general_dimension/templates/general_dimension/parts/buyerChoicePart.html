@@ -29,8 +29,8 @@
 {% else %}
     <table id = "prices">
         <thead>
-            <tr>
-            {% for i, price_dim in prices %}
+            <tr> <th></th>
+            {% for i in sellers %}
                 <th>Seller {{ i }}</th>
             {% endfor %}
             </tr>

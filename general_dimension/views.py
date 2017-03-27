@@ -96,6 +96,7 @@ class InstructionsBuyer(Page):
     def vars_for_template(self):
         return{
             "prices": utils.get_example_prices(self.subsession.dims),
+            "sellers": range(1, 3)
         }
 
 class InstructionsBuyerQuiz(Page):
@@ -114,16 +115,17 @@ class InstructionsRoundResults(Page):
     def vars_for_template(self):
         player = Player(roledesc="Seller", payoff_marginal=225, ask_total=325, numsold=1, rolenum=1)
 
+        buyer_choices = list(zip(range(1, 3), [[0,1],[1,0]]))
+
         return{
             "player": player,
             "subtotal": 225,
             "prices": utils.get_example_prices(self.subsession.dims),
-            "s1_ask_total": 325,
-            "s2_ask_total": 375,
-            "b1_seller": 1,
-            "b2_seller": 2,
             "prodcost": 100,
             "benefit": 325,
+            "sellers": range(1, 3),
+            "buyer_choices": buyer_choices,
+            "totals": [325, 375]
         }
 
 class InstructionsWaitGame(Page):
@@ -139,14 +141,22 @@ class PracticeBegin(Page):
 
     def vars_for_template(self):
         otherrole = [role for role in ["Buyer", "Seller"] if role != self.player.roledesc][0]
+        practicerounds = Constants.num_rounds_practice[self.subsession.block - 1]
         return {
             "otherrole": otherrole,
+            "practicerounds": practicerounds
         }
 
 class PracticeEnd(Page):
 
     def is_displayed(self):
         return self.subsession.show_instructions_real
+
+    def vars_for_template(self):
+        treatmentrounds = Constants.num_rounds_treatment[self.subsession.block - 1]
+        return {
+            "treatmentrounds": treatmentrounds,
+        }
 
 
 

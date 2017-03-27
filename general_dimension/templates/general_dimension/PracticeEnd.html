@@ -12,7 +12,7 @@
     <p>
         If you have any questions at this time, please raise your hand.
     </p>
-    <p>You will play {{ Constants.num_rounds_treatment }} paid round{{Constants.num_rounds_treatment|pluralize}} of this game.
+    <p>You will play {{ treatmentrounds }} paid round{{treatmentrounds|pluralize}} of this game.
         {% if subsession.block < Constants.num_treatments %}
             After this, you will receive additional instructions.
         {% endif %}

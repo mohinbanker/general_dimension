@@ -188,7 +188,6 @@ SESSION_CONFIGS = [
             'general_dimension',
             'survey'
         ],
-        'treatmentorder': "1,2",
         'participation_fee': 5,
         'real_world_currency_per_point': (1.00/700),
         'date': "20170317",

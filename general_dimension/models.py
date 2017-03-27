@@ -21,16 +21,17 @@ class Constants(BaseConstants):
     # REQUIRES: len(treatmentdims) == len(num_sellers) == len(num_buyers) == len(practicerounds) == len(num_rounds_treatment)
     # REQUIRES: len(treatmentorder) == len(treatmentdims) where treatmentorder is found in settings.py
     # REQUIRES: Number of participants to be divisible by num_sellers[i] + num_buyers[i] for all i in [1, len(num_sellers)]
-    # treatmentdims: Number of price dimensions for each treatment i
+    # treatmentdims: Number of price dimensions for each treatment i. Right now, only 1, 8, and 16 dimensions are supported.
     # num_sellers: Number of seller roles for each treatment i
     # num_buyers: Number of buyer roles for each treatment i
     # practicerounds: Whether there should be practice rounds for treatment i
     # num_rounds_treatment: Number of paid rounds for  treatment i
-    treatmentdims = [16, 16]
-    num_sellers = [1, 4]
-    num_buyers = [3, 4]
-    practicerounds = [False, False]
-    num_rounds_treatment = [2, 2]
+
+    treatmentdims = [1, 16]
+    num_sellers = [2, 3]
+    num_buyers = [2, 1]
+    practicerounds = [True, True]
+    num_rounds_treatment = [1, 1]
     
     # Checking requirements
     assert(len(treatmentdims) == len(num_sellers))
@@ -43,48 +44,43 @@ class Constants(BaseConstants):
     num_rounds_practice = []
     for i in range(len(num_sellers)):
         num_rounds_practice.append(math.ceil((num_sellers[i] + num_buyers[i])/(min(num_sellers[i], num_buyers[i]))) * int(practicerounds[i]))
-    # num_rounds_practice = [math.ceil((num_sellers[i] + num_buyers[i])/(min(num_sellers[i], num_buyers[i]))) for i in range(len(num_sellers))]
     name_in_url = 'general_dimension'
     players_per_group = None
     num_treatments = len(treatmentdims)
     num_rounds = sum(num_rounds_treatment) + sum(num_rounds_practice)
-    # num_players = 12
     prodcost = 100
     consbenefit = 800
     maxprice = 800
     minprice = 0
     starting_tokens = maxprice
+
+
     # For convenience of testing the experience of players
-    show_instructions_admin = False # set false to not show any instructions whatsoever
+    show_instructions_admin = True # set false to not show any instructions whatsoever
 
 
 class Subsession(BaseSubsession):
     practiceround = models.BooleanField(doc="True if subsession is a practice round")
     realround = models.BooleanField(doc="True if subsession is not a practice round")
     block = models.IntegerField(doc="The order in which the treatment was played in the session")
-    treatment = models.IntegerField(doc="The number of the treatment. 1=1, 2=8, 3=16")
     dims = models.IntegerField(doc="The number of price dimensions in the treatment.")
     block_new = models.BooleanField(default=False, doc="True if round is the first in a new treatment block")
     treatment_first_singular = models.BooleanField(default=False, doc="True if block>1 and treatment==1")
     treatment_first_multiple = models.BooleanField(default=False, doc="True if block==2 and block1 treatment==1 ")
     sellers = models.IntegerField(doc = "The number of sellers in the treatment")
     buyers = models.IntegerField(doc = "The number of buyers in the treatment")
+    treatment = models.IntegerField(doc = "The number of the treatment")
 
     show_instructions_base = models.BooleanField(doc="True if basic instructions are to be shown this round.")
     show_instructions_block = models.BooleanField(doc="True if new-block instructions are to be shown this round.")
     show_instructions_roles = models.BooleanField(doc="True if role-specific instructions are to be shown this round.")
     show_instructions_practice = models.BooleanField(doc="True if practice round specific instructions are to be shwn.")
     show_instructions_real = models.BooleanField(doc="True if real round specific instructions are to be shown.")
-    player_practice = dict()
-
 
     def vars_for_admin_report(self):
         return {"session_code": self.session.code,
                 }
     def before_session_starts(self):
-        # take the string inputted by the experimenter and change it to a list
-        treatmentorder = [int(t) for t in self.session.config["treatmentorder"].split(",")]
-
         # new treatment rounds
         new_block_rounds = [sum(Constants.num_rounds_treatment[:i]) + sum(Constants.num_rounds_practice[:i]) + 1 for i in range(len(Constants.num_rounds_treatment) + 1)]
 
@@ -104,6 +100,7 @@ class Subsession(BaseSubsession):
                     self.block = i + 1
                     break
 
+        self.treatment = self.block
         # Is this a practice round?
         if self.round_number in practice_rounds:
             self.practiceround = True
@@ -113,14 +110,13 @@ class Subsession(BaseSubsession):
             self.realround = True
 
         # store treatment number,  dims, and number of sellers
-        self.treatment = treatmentorder[self.block - 1]
-        self.dims = Constants.treatmentdims[self.treatment - 1]
-        self.sellers = Constants.num_sellers[self.treatment - 1]
-        self.buyers = Constants.num_buyers[self.treatment - 1]
+        self.dims = Constants.treatmentdims[self.block - 1]
+        self.sellers = Constants.num_sellers[self.block - 1]
+        self.buyers = Constants.num_buyers[self.block - 1]
 
         # Flag if this is the first round with either a multiple-dim treatment or a single-dim treatment
         #   this is used for instructions logic.
-        prev_treatments = treatmentorder[: (self.block - 1)]
+        prev_treatments = range(1, self.block)
         prev_dims = [Constants.treatmentdims[treatment - 1] for treatment in prev_treatments]
         if self.block_new and self.round_number > 1 and self.dims == 1 and min([99] + prev_dims) > 1:
             self.treatment_first_singular = True
@@ -148,11 +144,13 @@ class Subsession(BaseSubsession):
         # Convert to numpy array temporarily because it allows easier regrouping
         new_matrix = np.array(matrix).reshape(num_players/group_size, group_size).tolist()
 
+        # Initialize practice round attributes for a new treatment
         if self.block_new:
             for player in self.get_players():
                 player.buyer_in_practice = False
                 player.seller_in_practice = False
                 player.role_in_practice = False
+        # Player objects don't carry over between rounds, so you have to retreive practice round attributes from previous round
         else:
             for player in self.get_players():
                 player_last_round = player.in_round(self.round_number - 1)
@@ -160,11 +158,9 @@ class Subsession(BaseSubsession):
                 player.seller_in_practice = player_last_round.seller_in_practice
                 player.role_in_practice = False
 
-        for player in self.get_players():
-            player.role_in_practice = False
-
-
-        if (self.round_number-1) in practice_rounds and self.round_number in practice_rounds:
+        # Reallocating groups for multiple practice rounds
+        # Make sure all players experience both roles        
+        if (self.round_number - 1) in practice_rounds and self.round_number in practice_rounds:
             new_matrix = []
             for i in range(int(num_players/group_size)):
                 new_matrix.append([])
@@ -215,7 +211,7 @@ class Subsession(BaseSubsession):
                         if not len(new_matrix[i]) < group_size:
                             break
 
-                # Adding in anybody to fill in leftover seller spots
+                # Adding in anybody else to fill in leftover seller spots
                 if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
                     for player in self.get_players():
                         if not player.role_in_practice:
@@ -224,9 +220,9 @@ class Subsession(BaseSubsession):
                         if not len(new_matrix[i]) < group_size:
                             break
 
-            print(new_matrix)
             self.set_group_matrix(new_matrix)
 
+        # For treatment rounds (and first practice round), choose random groupings
         else:
             self.set_group_matrix(new_matrix)
             self.group_randomly()
@@ -254,10 +250,7 @@ class Group(BaseGroup):
         contract.save()
 
     def set_marketvars(self):
-        # this gets hit after all buyers and sellers have made their choices
-        # sellers = Player.objects.filter(group=self, roledesc="Seller")
-        # buyers = Player.objects.filter(group=self, roledesc="Buyer")
-
+        # This function is called after all buyers and sellers have made their choices
         contracts = Contract.objects.filter(group=self)
         asks = []
         stdevs = []
@@ -292,14 +285,11 @@ class Group(BaseGroup):
             player.payoff_interim = player.participant.payoff
                 
         # Market data
-        # self.mkt_ask_min = min([c.ask.total for c in contracts])
-        # self.mkt_ask_max = max([c.ask.total for c in contracts])
         self.mkt_ask_min = min(asks)
         self.mkt_ask_max = max(asks)
         self.mkt_ask_spread = self.mkt_ask_max - self.mkt_ask_min
         self.mkt_bid_avg = float(sum([c.bid.total for c in contracts])) / len(contracts)
         self.mkt_ask_stdev_min = min(stdevs)
-
 
 
 class Player(BasePlayer):
@@ -341,9 +331,10 @@ class Player(BasePlayer):
     # wait page game
     gamewait_numcorrect = models.IntegerField(default=0, doc="The number of words found by player in the word search")
 
-    buyer_in_practice = models.BooleanField()
-    seller_in_practice = models.BooleanField()
-    role_in_practice = models.BooleanField()
+    # Practice round grouping
+    buyer_in_practice = models.BooleanField(doc = "Player acted as a buyer in at least one practice round for this block")
+    seller_in_practice = models.BooleanField(doc = "Player acted as a seller in at least one practice round for this block")
+    role_in_practice = models.BooleanField(doc = "Player was placed in a practice round group for this round")
 
     def create_bid(self, bid_total, pricedims):
         """ Creates a bid row associated with the buyer after the buyer makes his/her choice """
@@ -363,9 +354,6 @@ class Player(BasePlayer):
         """
         ask = Ask(player=self, total=total, auto=auto, manual=manual, stdev=stdev)
         ask.save()
-        # if pricedims == None:
-        #ask.generate_pricedims()
-        # else:
         ask.set_pricedims(pricedims)
 
         return ask
@@ -402,23 +390,17 @@ class Player(BasePlayer):
 
     def set_buyer_data(self):
         """ This data is stored for analysis purposes. Payoffs set in group """
-        rolenum_other = [ rn + 1 for rn in range(self.subsession.sellers) if rn != self.contract_seller_rolenum]
+        rolenum_other = [rn + 1 for rn in range(self.subsession.sellers) if (rn + 1) != self.contract_seller_rolenum]
         seller = self.group.get_player_by_role("S" + str(self.contract_seller_rolenum))
-        # seller_other = self.group.get_player_by_role("S" + str(rolenum_other))
 
         self.bid_total = seller.ask_total
         ask_diff = [self.bid_total - self.group.get_player_by_role("S" + str(rolenum)).ask_total for rolenum in rolenum_other]
 
-        # self.other_seller_ask_total = seller_other.ask_total
-        # self.other_seller_ask_stdev = seller_other.ask_stdev
         self.mistake_size = max([0] + ask_diff)
         self.mistake_bool = 0 if self.mistake_size <= 0 else 1
 
-        # self.other_seller_ask_stddev = pstdev([ pd.value for pd in seller_other.get_ask().pricedim_set.all() ])
-
-
     def set_role(self):
-        # since we've randomized player ids in groups in the subsession class, we can assign role via id_in_group here
+        # Since we've randomized player ids in groups in the subsession class, we can assign role via id_in_group here
         if (self.id_in_group <= self.subsession.buyers):
             self.rolenum = self.id_in_group
             self.roledesc = "Buyer"
@@ -444,14 +426,6 @@ class Ask(Model):
     auto = models.BooleanField(doc="True if ask was generated automatically by the 'distribute' button")
     manual = models.BooleanField(doc="True if ask was generated by seller manually adjusting a single price dim")
     player = ForeignKey(Player)
-
-    # def generate_pricedims(self):
-    #     """ set through auto-generation of price dims """
-    #     for i in range(self.player.subsession.dims):
-    #
-    #         # pd = PriceDim(ask=self, dimnum=i + 1)
-    #         pd = self.pricedim_set.create(dimnum=i + 1)
-    #         pd.save()
 
     def set_pricedims(self, pricedims):
         """ set through manual manipulation of fields """
