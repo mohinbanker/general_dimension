@@ -12,7 +12,7 @@
                         Sellers earn tokens by producing objects and selling them to buyers.  When you are a seller, your only job is to set your {{ subsession.dims | pluralize:"price, sub-prices" }}.
                     </p>
                     <p>
-                        When a buyer chooses to buy an object from you, you will automatically produce it.  Since there are two buyers in your group, you can sell 0, 1, or 2 objects each round.
+                        When a buyer chooses to buy an object from you, you will automatically produce it.  Since there {{ subsession.buyers|pluralize:"is,are"}} {{ subsession.buyers }} buyer{{ subsession.buyers|pluralize }} in your group, you can sell between 0 and {{ subsession.buyers }} objects each round.
                     </p>
                 </section>
             {% endif %}

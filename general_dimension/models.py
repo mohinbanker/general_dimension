@@ -17,28 +17,31 @@ doc = """
 
 
 class Constants(BaseConstants):
-    # INPUTS:
-    # REQUIRES: len(treatmentdims) == len(num_sellers) == len(num_buyers) == len(practicerounds) == len(num_rounds_treatment)
-    # REQUIRES: len(treatmentorder) == len(treatmentdims) where treatmentorder is found in settings.py
-    # REQUIRES: Number of participants to be divisible by num_sellers[i] + num_buyers[i] for all i in [1, len(num_sellers)]
-    # treatmentdims: Number of price dimensions for each treatment i. Right now, only 1, 8, and 16 dimensions are supported.
-    # num_sellers: Number of seller roles for each treatment i
-    # num_buyers: Number of buyer roles for each treatment i
-    # practicerounds: Whether there should be practice rounds for treatment i
-    # num_rounds_treatment: Number of paid rounds for  treatment i
+    """
+    INPUTS:
+    REQUIRES: len(treatmentdims) == len(num_sellers) == len(num_buyers) == len(practicerounds) == len(num_rounds_treatment)
+    REQUIRES: len(treatmentorder) == len(treatmentdims) where treatmentorder is found in settings.py
+    REQUIRES: Number of participants to be divisible by num_sellers[i] + num_buyers[i] for all i in [1, len(num_sellers)]
+    
+    treatmentdims: Number of price dimensions for each treatment i.
+    num_sellers: Number of seller roles for each treatment i
+    num_buyers: Number of buyer roles for each treatment i
+    practicerounds: Whether there should be practice rounds for treatment i
+    num_rounds_treatment: Number of paid rounds for treatment i
+    """
 
     #############################################################
-    treatmentdims = [16, 1, 8]                                  #
-    num_sellers = [2, 2, 2]                                     #
-    num_buyers = [2, 2, 2]                                      #
-    practicerounds = [True, True, True]                         #
-    num_rounds_treatment = [8, 8, 8]                            #
+    treatmentdims = [12, 32, 7]                                  
+    num_sellers = [1, 1, 1]                                     
+    num_buyers = [1, 1, 1]                                      
+    practicerounds = [False, False, False]                         
+    num_rounds_treatment = [1, 1, 1]                            
     #############################################################
     
 
 
 
-    
+
     # Checking requirements
     assert(len(treatmentdims) == len(num_sellers))
     assert(len(treatmentdims) == len(num_buyers))

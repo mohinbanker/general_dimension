@@ -133,12 +133,15 @@ def get_stdev(ask_total, numdims):
     ask_avg = 1.* ask_total/numdims
     ask_log = math.log(ask_total)
 
-    if numdims == 8:
-        stdev_util = math.exp( -0.3411935 + 0.1052575*ask_log ) - 1
-    elif numdims == 16:
-        stdev_util = math.exp( -0.0270693 + .0509434*ask_log ) - 1
-    else:
-        raise ValueError('{} dimensions not supported'.format(numdims))
+    # if numdims == 8:
+    #     stdev_util = math.exp( -0.3411935 + 0.1052575*ask_log ) - 1
+    # elif numdims == 16:
+    #     stdev_util = math.exp( -0.0270693 + .0509434*ask_log ) - 1
+    # else:
+    #     raise ValueError('{} dimensions not supported'.format(numdims))
+
+    # Fit a linear regression so there is a common stdev_util function for all price dimensions
+    stdev_util = -0.2287798 + 0.00003303819*ask_total + 0.1734626/ask_total + 0.09059366*math.log(ask_total)
 
     stdev_max = math.sqrt((math.pow(ask_total - ask_avg, 2) + math.pow(0 - ask_avg, 2)*(numdims - 1))/numdims)
     stdev = stdev_max*stdev_util
@@ -212,22 +215,24 @@ def get_autopricedims(ask_total, numdims):
     }
 
 
-def get_example_prices(dims):
+def get_example_prices(sellers, dims):
     """
         example dims for instructions generated through same process as Seller's page.
         :param dims:
         :return:
     """
-    if dims == 8:
-        s1_pd = [57, 65, 3, 1, 40, 40, 37, 82]  # 325
-        s2_pd = [46, 91, 20, 64, 48, 45, 32, 29]  # 375
-    elif dims == 16:
-        s1_pd = [26, 4, 2, 39, 55, 44, 34, 1, 9, 10, 29, 0, 26, 0, 23, 23]  # 325
-        s2_pd = [7, 22, 0, 35, 16, 0, 31, 41, 28, 4, 2, 81, 32, 0, 17, 59]  # 375
-    elif dims == 1:
-        s1_pd = [325]
-        s2_pd = [375]
-    else:
-        raise ValueError('{} dimensions not supported'.format(dims))
-
-    return list(zip(range(1, dims + 1), zip(*[s1_pd, s2_pd])))
+    # if dims == 8:
+    #     s1_pd = [57, 65, 3, 1, 40, 40, 37, 82]  # 325
+    #     s2_pd = [46, 91, 20, 64, 48, 45, 32, 29]  # 375
+    # elif dims == 16:
+    #     s1_pd = [26, 4, 2, 39, 55, 44, 34, 1, 9, 10, 29, 0, 26, 0, 23, 23]  # 325
+    #     s2_pd = [7, 22, 0, 35, 16, 0, 31, 41, 28, 4, 2, 81, 32, 0, 17, 59]  # 375
+    # elif dims == 1:
+    #     s1_pd = [325]
+    #     s2_pd = [375]
+    # else:
+    #     raise ValueError('{} dimensions not supported'.format(dims))
+    prices = []
+    for seller in sellers:
+        prices.append(get_autopricedims(min(800, 325 + 50*sellers.index(seller)), dims)["pricedims"])
+    return list(zip(range(1, dims + 1), zip(*prices)))

@@ -94,8 +94,8 @@ class InstructionsBuyer(Page):
 
     def vars_for_template(self):
         return{
-            "prices": utils.get_example_prices(self.subsession.dims),
-            "sellers": range(1, 3)
+            "prices": utils.get_example_prices(range(self.subsession.sellers), self.subsession.dims),
+            "sellers": range(1, self.subsession.sellers + 1)
         }
 
 class InstructionsBuyerQuiz(Page):
@@ -119,7 +119,7 @@ class InstructionsRoundResults(Page):
         return{
             "player": player,
             "subtotal": 225,
-            "prices": utils.get_example_prices(self.subsession.dims),
+            "prices": utils.get_example_prices(range(2), self.subsession.dims),
             "prodcost": 100,
             "benefit": 325,
             "sellers": range(1, 3),
