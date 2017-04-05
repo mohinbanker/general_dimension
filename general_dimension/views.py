@@ -226,7 +226,7 @@ class ChoiceBuyer(Page):
         # Create a list of lists where each individual list contains price dimension i for every seller           
         price_dims = []
         if self.subsession.practiceround:
-            price_dims = self.participant.vars["price_dims" + str(self.subsession.round_number)]
+            price_dims = self.participant.vars["practice_asks" + str(self.subsession.round_number)]
         else:
             for i in range(self.subsession.sellers):
                 role = "S" + str(i + 1)

@@ -164,25 +164,9 @@ SESSION_CONFIGS = [
         ],
     },
     {
-        'name': 'quad_sellers',
-        'display_name': "Two or Four Firm Oligopoly",
-        'num_demo_participants': 12,
-        'use_browser_bots' : False,
-        'app_sequence': [
-            'quad_sellers',
-            'survey'
-        ],
-        'treatmentorder': "4,2,3,1",
-        'participation_fee': 5,
-        'real_world_currency_per_point': (1.00/700),
-        'date': "20170317",
-        'time': "1430",
-        'experimenter_present': True, # set false to show "Next" button on ALL pages.
-    },
-    {
         'name': 'general_dimension',
-        'display_name': "Experiment",
-        'num_demo_participants': 4,
+        'display_name': "General Dimension",
+        'num_demo_participants': 6,
         'use_browser_bots' : False,
         'app_sequence': [
             'general_dimension',

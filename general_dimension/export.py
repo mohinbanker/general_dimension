@@ -13,6 +13,7 @@ import inspect
 import six
 from otree.common_internal import get_models_module, app_name_format
 from collections import OrderedDict
+from statistics import pstdev
 
 
 # HELPER METHODS
@@ -71,6 +72,20 @@ def get_pd_list(pricedims, dims, maxdim):
 
     return pricedim_list
 
+def get_pd_list_bot(pricedims, dims, maxdim):
+    """ return list of pricedims with appropriate number of blank cells for a bot used in practice round"""
+    if len(pricedims) == 0:
+        # only here if this row is not yet populated (checking data mid-stream)
+        pricedim_list = [""] * maxdim
+    else:
+        pricedim_list = []
+        for i in range(1, maxdim + 1):
+            if i <= dims:
+                pricedim_list += [pricedims[i - 1]]
+            else:
+                pricedim_list += [""]
+
+    return pricedim_list
 
 # EXPORT FUNCTIONS
 def export_asks():
@@ -230,28 +245,73 @@ def get_market_headers(maxdim):
     return hdrs
 
 def get_market_row(group, dims, maxdim):
-    """ Helper function to cteate market-level data """
+    """ Helper function to create market-level data """
     market_list = []
     seller_names = ["S" + str(rolenum + 1) for rolenum in range(max(Constants.num_sellers))]
-    for role in seller_names: 
-        try:
-            seller = group.get_player_by_role(role)
-            market_list += [seller.participant.id_in_session, seller.participant.code, seller.payoff,
-                            seller.ask_total, seller.ask_stdev, seller.numsold]
-                        # add price dims and appropriate number of blank spaces
-            market_list += get_pd_list(seller.get_pricedims(), dims, maxdim)
-        except ValueError:
-            market_list += ([""] * 6) + ([""] * max(Constants.treatmentdims))
-
-
     buyer_names = ["B" + str(rolenum + 1) for rolenum in range(max(Constants.num_buyers))]
-    for role in buyer_names:
-        try:
-            buyer = group.get_player_by_role(role)
-            market_list += [buyer.participant.id_in_session, buyer.participant.code, 
-                            buyer.payoff, buyer.bid_total, buyer.contract_seller_rolenum]
-        except ValueError:
-            market_list += ([""] * 5)
+
+    if group.subsession.practiceround:
+        player = group.get_player_by_id(1)
+        asks = player.participant.vars["practice_asks" + str(group.subsession.round_number)]
+        bids = player.participant.vars["practice_bids" + str(group.subsession.round_number)]
+        numsold = list(map(sum, zip(*bids)))
+        if player.roledesc == "Seller":
+            market_list += [player.participant.id_in_session, player.participant.code, player.payoff,
+                            player.ask_total, player.ask_stdev, player.numsold]
+            market_list += get_pd_list(player.get_pricedims(), dims, maxdim)
+
+            # SELLER IN PRACTICE ROUND
+            for i in range(1, max(Constants.num_sellers)):
+                try:
+                    market_list += [0, "bot", 0, sum(asks[i]), pstdev(asks[i]), numsold[i]]
+                    market_list += get_pd_list_bot(asks[i], dims, maxdim)
+                except (ValueError, IndexError):
+                    market_list += ([""] * 6) + ([""] * max(Constants.treatmentdims))
+            # BUYER IN PRACTICE ROUND
+            for i in range(max(Constants.num_buyers)):
+                try:
+                    market_list += [0, "bot", 0, sum(asks[bids[i].index(1)]), bids[i].index(1)]
+                except (ValueError, IndexError):
+                    market_list += ([""] * 5)
+
+        else:
+            # SELLER IN PRACTICE ROUND
+            for i in range(max(Constants.num_sellers)):
+                try:
+                    market_list += [0, "bot", 0, sum(asks[i]), pstdev(asks[i]), numsold[i]]
+                    market_list += get_pd_list_bot(asks[i], dims, maxdim)
+                except (ValueError, IndexError):
+                   market_list += ([""] * 6) + ([""] * max(Constants.treatmentdims))
+            market_list += [player.participant.id_in_session, player.participant.code, player.payoff,
+                            player.bid_total, player.contract_seller_rolenum]
+
+            # BUYER IN PRACTICE ROUND
+            for i in range(1, max(Constants.num_buyers)):
+                try:
+                    market_list += [0, "bot", 0, sum(asks[bids[i].index(1)]), bids[i].index(1)]
+                except (ValueError, IndexError):
+                    market_list += ([""] * 5)
+
+    else:
+        # SELLER IN REAL ROUND
+        for role in seller_names: 
+            try:
+                seller = group.get_player_by_role(role)
+                market_list += [seller.participant.id_in_session, seller.participant.code, seller.payoff,
+                                seller.ask_total, seller.ask_stdev, seller.numsold]
+                            # add price dims and appropriate number of blank spaces
+                market_list += get_pd_list(seller.get_pricedims(), dims, maxdim)
+            except ValueError:
+                market_list += ([""] * 6) + ([""] * max(Constants.treatmentdims))
+
+        # BUYER IN REAL ROUND
+        for role in buyer_names:
+            try:
+                buyer = group.get_player_by_role(role)
+                market_list += [buyer.participant.id_in_session, buyer.participant.code, 
+                                buyer.payoff, buyer.bid_total, buyer.contract_seller_rolenum]
+            except ValueError:
+                market_list += ([""] * 5)
     return market_list
 
 def export_marketdata():
@@ -310,7 +370,7 @@ def export_combineddata():
     session_fns, session_fns_d, group_fns, group_fns_d, participant_fns, participant_fns_d = get_headers_simple()
 
     session_fns = ["id"] + get_field_names_for_csv(Session)
-    metadata_fns = ["treatmentorder", "date", "time"]
+    metadata_fns = ["date", "time"]
     subsession_fns = get_field_names_for_csv(Subsession) # this will only get the market subsessions (not survey)
     group_fns = get_field_names_for_csv(Group)
     market_fns = get_market_headers(maxdim)

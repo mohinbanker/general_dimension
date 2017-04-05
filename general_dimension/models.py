@@ -31,8 +31,8 @@ class Constants(BaseConstants):
     #############################################################
     treatmentdims = [12, 32, 7]                                  
     num_sellers = [3, 1, 1]                                     
-    num_buyers = [1, 1, 1]                                      
-    practicerounds = [False, False, False]                         
+    num_buyers = [3, 1, 1]                                      
+    practicerounds = [True, True, True]                         
     num_rounds_treatment = [1, 1, 1]                            
     #############################################################
     
@@ -48,7 +48,9 @@ class Constants(BaseConstants):
 
 
     # Calculates the minimum number of practice rounds for each participant to experience both roles of each treatment
-    num_rounds_practice = [2] * len(treatmentdims)
+    num_rounds_practice = []
+    for i in range(len(practicerounds)):
+        num_rounds_practice.append(2 * int(practicerounds[i]))
     # for i in range(len(num_sellers)):
     #     num_rounds_practice.append(math.ceil((num_sellers[i] + num_buyers[i])/(min(num_sellers[i], num_buyers[i]))) * int(practicerounds[i]))
     
@@ -145,99 +147,9 @@ class Subsession(BaseSubsession):
                                                   and Constants.show_instructions_admin else False
 
 
-        # matrix = self.get_group_matrix()
-        # num_players = len(self.get_players())
-        # group_size = self.sellers + self.buyers
-        # # Convert to numpy array temporarily because it allows easier regrouping
-        # new_matrix = np.array(matrix).reshape(num_players/group_size, group_size).tolist()
-
-        # # Initialize practice round attributes for a new treatment
-        # if self.block_new:
-        #     for player in self.get_players():
-        #         player.buyer_in_practice = False
-        #         player.seller_in_practice = False
-        #         player.role_in_practice = False
-        
-        # # Player objects don't carry over between rounds, so you have to retreive practice round attributes from previous round
-        # else:
-        #     for player in self.get_players():
-        #         player_last_round = player.in_round(self.round_number - 1)
-        #         player.buyer_in_practice = player_last_round.buyer_in_practice
-        #         player.seller_in_practice = player_last_round.seller_in_practice
-        #         player.role_in_practice = False
-
-        # # Reallocating groups for multiple practice rounds
-        # # Make sure all players experience both roles        
-        # if (self.round_number - 1) in practice_rounds and self.round_number in practice_rounds:
-        #     new_matrix = []
-        #     for i in range(int(num_players/group_size)):
-        #         new_matrix.append([])
-
-        #         if (len(new_matrix[i]) < self.buyers):
-        #             for player in self.get_players():
-        #                 if not player.buyer_in_practice and not player.role_in_practice:
-        #                     player.buyer_in_practice = True
-        #                     player.role_in_practice = True
-        #                     new_matrix[i].append(player)
-        #                 if not len(new_matrix[i]) < self.buyers:
-        #                     break
-
-        #         # Adding buyers with players who have been both buyer and seller
-        #         if len(new_matrix[i]) < self.buyers:
-        #             for player in self.get_players():
-        #                 if (player.buyer_in_practice and player.seller_in_practice) and not player.role_in_practice:
-        #                     player.role_in_practice = True
-        #                     new_matrix[i].append(player)
-        #                 if not len(new_matrix[i]) < self.buyers:
-        #                     break
-
-        #         # Adding in anybody to fill in leftover buyer spots
-        #         if len(new_matrix[i]) < self.buyers:
-        #             for player in self.get_players():
-        #                 if not player.role_in_practice:
-        #                     player.role_in_practice = True
-        #                     new_matrix[i].append(player)
-        #                 if not len(new_matrix[i]) < self.buyers:
-        #                     break
-
-        #         # Adding sellers with players who haven't been sellers
-        #         if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
-        #             for player in self.get_players():
-        #                 if not player.seller_in_practice and not player.role_in_practice:
-        #                     player.seller_in_practice = True
-        #                     player.role_in_practice = True
-        #                     new_matrix[i].append(player)
-        #                 if not len(new_matrix[i]) < group_size:
-        #                     break
-
-        #         # Adding sellers with players who have been both buyer and seller
-        #         if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
-        #             for player in self.get_players():
-        #                 if (player.buyer_in_practice and player.seller_in_practice) and not player.role_in_practice:
-        #                     player.role_in_practice = True
-        #                     new_matrix[i].append(player)
-        #                 if not len(new_matrix[i]) < group_size:
-        #                     break
-
-        #         # Adding in anybody else to fill in leftover seller spots
-        #         if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
-        #             for player in self.get_players():
-        #                 if not player.role_in_practice:
-        #                     player.role_in_practice = True
-        #                     new_matrix[i].append(player)
-        #                 if not len(new_matrix[i]) < group_size:
-        #                     break
-
-        #     self.set_group_matrix(new_matrix)
-
-        # # For treatment rounds (and first practice round), choose random groupings
-        # else:
-        #     self.set_group_matrix(new_matrix)
-        #     self.group_randomly()
-
         num_players = len(self.get_players())
         matrix = self.get_group_matrix()
-
+        group_size = self.buyers + self.sellers
 
         if self.practiceround:
             new_matrix = np.array(matrix).reshape(num_players, 1).tolist()
@@ -257,19 +169,10 @@ class Subsession(BaseSubsession):
                 p.roledesc = "Buyer"
                 p.rolenum = 1
 
-            # if self.block_new:
-            #     if p.roledesc == "Buyer":
-            #         p.buyer_in_practice = True
-            #     else:
-            #         p.seller_in_practice = True
-
-        print("SELLERS: " + str(self.sellers) + "\n\n\n")
-        print("BUYERS: " + str(self.buyers) + "\n\n\n")
         if self.practiceround:
             for player in self.get_players():
                 player.participant.vars["practice_asks" + str(self.round_number)] = []
                 player.participant.vars["practice_bids" + str(self.round_number)] = []
-                player.participant.vars["price_dims" + str(self.round_number)] = []
                 if player.roledesc == "Seller":
                     asks = [] #self.participant.vars["practice_asks"]
                     for i in range(1, self.sellers):
@@ -285,7 +188,7 @@ class Subsession(BaseSubsession):
                     for i in range(self.sellers):
                         ask_total = random.randint(Constants.prodcost, Constants.maxprice)
                         price_dims.append(get_autopricedims(ask_total, self.dims)["pricedims"])
-                    player.participant.vars["price_dims" + str(self.round_number)] = price_dims
+                    player.participant.vars["practice_asks" + str(self.round_number)] = price_dims
 
 
 
