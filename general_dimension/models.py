@@ -5,11 +5,9 @@ from otree.api import (
 from otree.db.models import Model, ForeignKey
 from statistics import pstdev
 from otree.models.session import Session
-import numpy as np
-import math
+import numpy as np, math, random, copy
 
-
-author = 'Dustin Beckett'
+author = 'Dustin Beckett, Mohin Banker'
 
 doc = """
 
@@ -32,7 +30,7 @@ class Constants(BaseConstants):
 
     #############################################################
     treatmentdims = [12, 32, 7]                                  
-    num_sellers = [1, 1, 1]                                     
+    num_sellers = [3, 1, 1]                                     
     num_buyers = [1, 1, 1]                                      
     practicerounds = [False, False, False]                         
     num_rounds_treatment = [1, 1, 1]                            
@@ -50,9 +48,10 @@ class Constants(BaseConstants):
 
 
     # Calculates the minimum number of practice rounds for each participant to experience both roles of each treatment
-    num_rounds_practice = []
-    for i in range(len(num_sellers)):
-        num_rounds_practice.append(math.ceil((num_sellers[i] + num_buyers[i])/(min(num_sellers[i], num_buyers[i]))) * int(practicerounds[i]))
+    num_rounds_practice = [2] * len(treatmentdims)
+    # for i in range(len(num_sellers)):
+    #     num_rounds_practice.append(math.ceil((num_sellers[i] + num_buyers[i])/(min(num_sellers[i], num_buyers[i]))) * int(practicerounds[i]))
+    
     name_in_url = 'general_dimension'
     players_per_group = None
     num_treatments = len(treatmentdims)
@@ -63,9 +62,8 @@ class Constants(BaseConstants):
     minprice = 0
     starting_tokens = maxprice
 
-
     # For convenience of testing the experience of players
-    show_instructions_admin = True # set false to not show any instructions whatsoever
+    show_instructions_admin = False # set false to not show any instructions whatsoever
 
 
 class Subsession(BaseSubsession):
@@ -147,104 +145,151 @@ class Subsession(BaseSubsession):
                                                   and Constants.show_instructions_admin else False
 
 
-        matrix = self.get_group_matrix()
-        num_players = len(self.get_players())
-        group_size = self.sellers + self.buyers
-        # Convert to numpy array temporarily because it allows easier regrouping
-        new_matrix = np.array(matrix).reshape(num_players/group_size, group_size).tolist()
+        # matrix = self.get_group_matrix()
+        # num_players = len(self.get_players())
+        # group_size = self.sellers + self.buyers
+        # # Convert to numpy array temporarily because it allows easier regrouping
+        # new_matrix = np.array(matrix).reshape(num_players/group_size, group_size).tolist()
 
-        # Initialize practice round attributes for a new treatment
-        if self.block_new:
-            for player in self.get_players():
-                player.buyer_in_practice = False
-                player.seller_in_practice = False
-                player.role_in_practice = False
+        # # Initialize practice round attributes for a new treatment
+        # if self.block_new:
+        #     for player in self.get_players():
+        #         player.buyer_in_practice = False
+        #         player.seller_in_practice = False
+        #         player.role_in_practice = False
         
-        # Player objects don't carry over between rounds, so you have to retreive practice round attributes from previous round
-        else:
-            for player in self.get_players():
-                player_last_round = player.in_round(self.round_number - 1)
-                player.buyer_in_practice = player_last_round.buyer_in_practice
-                player.seller_in_practice = player_last_round.seller_in_practice
-                player.role_in_practice = False
+        # # Player objects don't carry over between rounds, so you have to retreive practice round attributes from previous round
+        # else:
+        #     for player in self.get_players():
+        #         player_last_round = player.in_round(self.round_number - 1)
+        #         player.buyer_in_practice = player_last_round.buyer_in_practice
+        #         player.seller_in_practice = player_last_round.seller_in_practice
+        #         player.role_in_practice = False
 
-        # Reallocating groups for multiple practice rounds
-        # Make sure all players experience both roles        
-        if (self.round_number - 1) in practice_rounds and self.round_number in practice_rounds:
-            new_matrix = []
-            for i in range(int(num_players/group_size)):
-                new_matrix.append([])
+        # # Reallocating groups for multiple practice rounds
+        # # Make sure all players experience both roles        
+        # if (self.round_number - 1) in practice_rounds and self.round_number in practice_rounds:
+        #     new_matrix = []
+        #     for i in range(int(num_players/group_size)):
+        #         new_matrix.append([])
 
-                if (len(new_matrix[i]) < self.buyers):
-                    for player in self.get_players():
-                        if not player.buyer_in_practice and not player.role_in_practice:
-                            player.buyer_in_practice = True
-                            player.role_in_practice = True
-                            new_matrix[i].append(player)
-                        if not len(new_matrix[i]) < self.buyers:
-                            break
+        #         if (len(new_matrix[i]) < self.buyers):
+        #             for player in self.get_players():
+        #                 if not player.buyer_in_practice and not player.role_in_practice:
+        #                     player.buyer_in_practice = True
+        #                     player.role_in_practice = True
+        #                     new_matrix[i].append(player)
+        #                 if not len(new_matrix[i]) < self.buyers:
+        #                     break
 
-                # Adding buyers with players who have been both buyer and seller
-                if len(new_matrix[i]) < self.buyers:
-                    for player in self.get_players():
-                        if (player.buyer_in_practice and player.seller_in_practice) and not player.role_in_practice:
-                            player.role_in_practice = True
-                            new_matrix[i].append(player)
-                        if not len(new_matrix[i]) < self.buyers:
-                            break
+        #         # Adding buyers with players who have been both buyer and seller
+        #         if len(new_matrix[i]) < self.buyers:
+        #             for player in self.get_players():
+        #                 if (player.buyer_in_practice and player.seller_in_practice) and not player.role_in_practice:
+        #                     player.role_in_practice = True
+        #                     new_matrix[i].append(player)
+        #                 if not len(new_matrix[i]) < self.buyers:
+        #                     break
 
-                # Adding in anybody to fill in leftover buyer spots
-                if len(new_matrix[i]) < self.buyers:
-                    for player in self.get_players():
-                        if not player.role_in_practice:
-                            player.role_in_practice = True
-                            new_matrix[i].append(player)
-                        if not len(new_matrix[i]) < self.buyers:
-                            break
+        #         # Adding in anybody to fill in leftover buyer spots
+        #         if len(new_matrix[i]) < self.buyers:
+        #             for player in self.get_players():
+        #                 if not player.role_in_practice:
+        #                     player.role_in_practice = True
+        #                     new_matrix[i].append(player)
+        #                 if not len(new_matrix[i]) < self.buyers:
+        #                     break
 
-                # Adding sellers with players who haven't been sellers
-                if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
-                    for player in self.get_players():
-                        if not player.seller_in_practice and not player.role_in_practice:
-                            player.seller_in_practice = True
-                            player.role_in_practice = True
-                            new_matrix[i].append(player)
-                        if not len(new_matrix[i]) < group_size:
-                            break
+        #         # Adding sellers with players who haven't been sellers
+        #         if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
+        #             for player in self.get_players():
+        #                 if not player.seller_in_practice and not player.role_in_practice:
+        #                     player.seller_in_practice = True
+        #                     player.role_in_practice = True
+        #                     new_matrix[i].append(player)
+        #                 if not len(new_matrix[i]) < group_size:
+        #                     break
 
-                # Adding sellers with players who have been both buyer and seller
-                if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
-                    for player in self.get_players():
-                        if (player.buyer_in_practice and player.seller_in_practice) and not player.role_in_practice:
-                            player.role_in_practice = True
-                            new_matrix[i].append(player)
-                        if not len(new_matrix[i]) < group_size:
-                            break
+        #         # Adding sellers with players who have been both buyer and seller
+        #         if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
+        #             for player in self.get_players():
+        #                 if (player.buyer_in_practice and player.seller_in_practice) and not player.role_in_practice:
+        #                     player.role_in_practice = True
+        #                     new_matrix[i].append(player)
+        #                 if not len(new_matrix[i]) < group_size:
+        #                     break
 
-                # Adding in anybody else to fill in leftover seller spots
-                if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
-                    for player in self.get_players():
-                        if not player.role_in_practice:
-                            player.role_in_practice = True
-                            new_matrix[i].append(player)
-                        if not len(new_matrix[i]) < group_size:
-                            break
+        #         # Adding in anybody else to fill in leftover seller spots
+        #         if len(new_matrix[i]) >= self.buyers and len(new_matrix[i]) < group_size:
+        #             for player in self.get_players():
+        #                 if not player.role_in_practice:
+        #                     player.role_in_practice = True
+        #                     new_matrix[i].append(player)
+        #                 if not len(new_matrix[i]) < group_size:
+        #                     break
 
+        #     self.set_group_matrix(new_matrix)
+
+        # # For treatment rounds (and first practice round), choose random groupings
+        # else:
+        #     self.set_group_matrix(new_matrix)
+        #     self.group_randomly()
+
+        num_players = len(self.get_players())
+        matrix = self.get_group_matrix()
+
+
+        if self.practiceround:
+            new_matrix = np.array(matrix).reshape(num_players, 1).tolist()
             self.set_group_matrix(new_matrix)
-
-        # For treatment rounds (and first practice round), choose random groupings
         else:
+            group_size = self.sellers + self.buyers
+            new_matrix = np.array(matrix).reshape(num_players/group_size, group_size).tolist()
             self.set_group_matrix(new_matrix)
-            self.group_randomly()
 
         for p in self.get_players():
             # set player roles
             p.set_role()
             if self.block_new:
-                if p.roledesc == "Buyer":
-                    p.buyer_in_practice = True
+                p.roledesc = "Seller"
+                p.rolenum = 1
+            elif self.practiceround:
+                p.roledesc = "Buyer"
+                p.rolenum = 1
+
+            # if self.block_new:
+            #     if p.roledesc == "Buyer":
+            #         p.buyer_in_practice = True
+            #     else:
+            #         p.seller_in_practice = True
+
+        print("SELLERS: " + str(self.sellers) + "\n\n\n")
+        print("BUYERS: " + str(self.buyers) + "\n\n\n")
+        if self.practiceround:
+            for player in self.get_players():
+                player.participant.vars["practice_asks" + str(self.round_number)] = []
+                player.participant.vars["practice_bids" + str(self.round_number)] = []
+                player.participant.vars["price_dims" + str(self.round_number)] = []
+                if player.roledesc == "Seller":
+                    asks = [] #self.participant.vars["practice_asks"]
+                    for i in range(1, self.sellers):
+                        ask_total = random.randint(Constants.prodcost, Constants.maxprice)
+                        asks.append(get_autopricedims(ask_total, self.dims)["pricedims"])
+                    player.participant.vars["practice_asks" + str(self.round_number)] = asks
+                    player.participant.vars["practice_bids" + str(self.round_number)] = [[0] * self.sellers for i in range(self.buyers)]
+                    for sellers in player.participant.vars["practice_bids" + str(self.round_number)]:
+                        if sum(sellers) == 0:
+                            sellers[random.randint(1, self.sellers) - 1] = 1
                 else:
-                    p.seller_in_practice = True
+                    price_dims = []
+                    for i in range(self.sellers):
+                        ask_total = random.randint(Constants.prodcost, Constants.maxprice)
+                        price_dims.append(get_autopricedims(ask_total, self.dims)["pricedims"])
+                    player.participant.vars["price_dims" + str(self.round_number)] = price_dims
+
+
+
+
 
 
 class Group(BaseGroup):
@@ -342,9 +387,12 @@ class Player(BasePlayer):
     gamewait_numcorrect = models.IntegerField(default=0, doc="The number of words found by player in the word search")
 
     # Practice round grouping
-    buyer_in_practice = models.BooleanField(doc = "Player acted as a buyer in at least one practice round for this block")
-    seller_in_practice = models.BooleanField(doc = "Player acted as a seller in at least one practice round for this block")
-    role_in_practice = models.BooleanField(doc = "Player was placed in a practice round group for this round")
+    # buyer_in_practice = models.BooleanField(doc = "Player acted as a buyer in at least one practice round for this block")
+    # seller_in_practice = models.BooleanField(doc = "Player acted as a seller in at least one practice round for this block")
+    # role_in_practice = models.BooleanField(doc = "Player was placed in a practice round group for this round")
+
+    practice_asks = []
+    practice_bids = []
 
     def create_bid(self, bid_total, pricedims):
         """ Creates a bid row associated with the buyer after the buyer makes his/her choice """
@@ -473,3 +521,102 @@ class PriceDim(Model):   # our custom model inherits from Django's base class "M
     # in reality, there will be either, but not both, an ask or a bid associated with each pricedim
     ask = ForeignKey(Ask, blank=True, null=True)    # creates 1:m relation -> this decision was made by a certain seller
     bid = ForeignKey(Bid, blank=True, null=True)
+
+
+def get_stdev(ask_total, numdims):
+    """
+        Using the first experiment, estimated the stdev/max(stdev). This was necessary because in the first experiment
+            players were constrained in each field to enter at most 800/numdims.  Here, we use that model, to estimate
+            expected stdev utilization as a function of ask_total, and then multiple it by max(stdev) in this new
+            environment.
+        :param ask_total:
+        :param numdims:
+        :return: because these models are fit on ask_total>100, it may return a negative value for total_price<100.
+            Therefore, we return the max(stdev, 1)
+    """
+    if ask_total == 0:
+        # stupid special cases
+        return (0, 0, 0)
+
+    ask_avg = 1.* ask_total/numdims
+    ask_log = math.log(ask_total)
+
+    # if numdims == 8:
+    #     stdev_util = math.exp( -0.3411935 + 0.1052575*ask_log ) - 1
+    # elif numdims == 16:
+    #     stdev_util = math.exp( -0.0270693 + .0509434*ask_log ) - 1
+    # else:
+    #     raise ValueError('{} dimensions not supported'.format(numdims))
+
+    # Fit a linear regression so there is a common stdev_util function for all price dimensions
+    stdev_util = -0.2287798 + 0.00003303819*ask_total + 0.1734626/ask_total + 0.09059366*math.log(ask_total)
+
+    stdev_max = math.sqrt((math.pow(ask_total - ask_avg, 2) + math.pow(0 - ask_avg, 2)*(numdims - 1))/numdims)
+    stdev = stdev_max*stdev_util
+
+    return (stdev_util, stdev_max, max(stdev, 1))
+
+
+def get_autopricedims(ask_total, numdims):
+    """
+    :param ask_total: the total price set by the seller
+    :param numdims: the number of price dimensions in this treatment
+    :return: dvalues: a numdims-sized list containing automatically generated dims that sum to ask_total
+    """
+
+    if ask_total < Constants.minprice or ask_total > Constants.maxprice:
+        msg = 'ask total {} outside allowable range [{}, {}]'.format(ask_total, Constants.minprice, Constants.maxprice)
+        raise ValueError(msg)
+
+    # take mu and stddev from data
+    mu = ask_total*1./numdims
+    (stdev_util, stdev_max, stdev) = get_stdev(ask_total, numdims)
+
+    rawvals = [0]*numdims
+    # take numDim draws from a normal distribution
+    for i in range(numdims):
+        val = -1
+        # truncated normal would be better, but we don't have scipy at the moment. This process should be equivalent
+        #   (although less efficient).  It simply redraws until it gets a value in range
+        while val < Constants.minprice or val > Constants.maxprice:
+            val = int(round(np.random.normal(mu, stdev)))
+        rawvals[i] = val
+
+    # this rounds the numbers to nearest int
+    #   and makes sure there is no negative #s or numbers greater than maxVal
+    dvalues = copy.copy(rawvals)
+    # print(dvalues)
+    def diff():
+        """ gets value to control while loops """
+        return ask_total - sum(dvalues)
+
+    # Now we need to get to our target value.
+    # First we reduce or increase uniformly.  This should preserve the chosen stdev
+    while abs(diff()) >= numdims:
+        increment = int(np.sign(diff()))
+        for dim in range(len(dvalues)):
+            # increment while staying in bounds
+            dvalues[dim] = max(0, dvalues[dim] + increment)
+            dvalues[dim] = min(Constants.maxprice, dvalues[dim])
+        # print(dvalues)
+
+    # Now we get to our target by incrementing a randomly chosen subset of dims without replacement.
+    #   This will distort the chosen stdev somewhat, but not a lot.
+    #   diff() should be < numdims
+    while not diff() == 0:
+        # using a while statement because if a dim is already at a bound, then this may take more than one loop
+        increment = int(np.sign(diff()))
+        dims = random.sample(range(numdims), abs(diff()))
+        for dim in dims:
+            dvalues[dim] = max(0, dvalues[dim] + increment)
+            dvalues[dim] = min(Constants.maxprice, dvalues[dim])
+        # print(dvalues)
+
+    return {
+        'ask_total': ask_total,
+        'ask_stdev': pstdev(dvalues),
+        'stdev utilization': stdev_util,
+        'stdev max': stdev_max,
+        'stdev target': stdev,
+        'pricedims': dvalues,
+    }

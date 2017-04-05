@@ -26,7 +26,7 @@
                     {% if subsession.dims > 1 %}
                         <li>
                             <label for="q1_3"><input type="radio" name="seller_q1" value="dims x 100 tokens" id="q1_3" required>
-                                {{ subsession.dims }} x 100 tokens
+                                {% widthratio subsession.dims 1 "100"%} tokens
                             </label>
                         </li>
                     {% endif %}

@@ -25,7 +25,7 @@
         You will play this game many times. Each time you play the game, we call this a “round”.
     </p>
     <p>
-        Each round, you will be grouped with three other participants.  Two of you will be sellers.  The other two will be buyers.
+        Each round, you will be grouped with {{ subsession.buyers|add:subsession.sellers|add:"-1"}} other participant{{ subsession.buyers|add:subsession.sellers|add:"-1"|pluralize }}.  There will be {{ subsession.sellers }} seller{{ subsession.sellers|pluralize }}. There will be {{ subsession.buyers}} buyer{{ subsession.buyers|pluralize }}.
     </p>
     <p>
         Who is in your group and what role you play are determined randomly by the computer at the start of each round.
@@ -37,10 +37,10 @@
     </p>
     <ol>
         <li>
-            The computer randomly groups participants into groups of four.
+            The computer randomly groups participants into groups of {{ subsession.buyers|add:subsession.sellers }}.
         </li>
         <li>
-            The computer randomly assigns two buyer roles and two seller roles in each group.
+            The computer randomly assigns {{ subsession.buyers }} buyer role{{ subsession.buyers|pluralize }} and {{ subsession.sellers }} seller role{{ subsession.sellers|pluralize }} in each group.
         </li>
         <li>
             Sellers set the prices of their objects.
@@ -52,7 +52,7 @@
             Each buyer chooses a seller to buy from and pays the seller's price in tokens.
         </li>
         <li>
-            Each seller produces the number of objects that they sold (between 0 and 2), and gives one to each of their buyers.
+            Each seller produces the number of objects that they sold (between 0 and {{ subsession.buyers }}), and gives one to each of their buyers.
         </li>
         <li>
             Each buyer gives the object they bought to the experimenter in exchange for tokens.

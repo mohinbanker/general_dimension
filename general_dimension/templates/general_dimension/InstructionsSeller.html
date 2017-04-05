@@ -19,7 +19,7 @@
             <section>
                 {% if subsession.round_number == 1  %}
                     <p>
-                        When you are a seller, each object you sell will cost you 100 tokens to produce.  Your total earnings at the end of a round will therefore equal the tokens you received from buyers, minus your total production costs.
+                        When you are a seller, each object you sell will cost you {{ Constants.prodcost }} tokens to produce.  Your total earnings at the end of a round will therefore equal the tokens you received from buyers, minus your total production costs.
                     </p>
                 {% endif %}
                 <p>
@@ -45,26 +45,29 @@
                             {% else %}
                                 <td>Price</td>
                             {% endif %}
-                            <td>100</td>
+                            <td>{{ Constants.prodcost }}</td>
                             {% if subsession.dims > 1 %}
-                                <td>"Total price" - 100</td>
+                                <td>"Total price" - {{ Constants.prodcost }}</td>
                             {% else %}
-                                <td>Price - 100</td>
-                            {% endif %}
-                        </tr><tr>
-                            <td>2</td>
-                            {% if subsession.dims > 1 %}
-                                <td>2 x "Total price"</td>
-                            {% else %}
-                                <td>2 x Price</td>
-                            {% endif %}
-                            <td>200</td>
-                            {% if subsession.dims > 1 %}
-                                <td>2 x "Total price" - 200</td>
-                            {% else %}
-                                <td>2 x Price</td>
+                                <td>Price - {{ Constants.prodcost }}</td>
                             {% endif %}
                         </tr>
+                        {% for i in seller_outcomes %}
+                        <tr>
+                            <td>i</td>
+                            {% if subsession.dims > 1 %}
+                                <td>i x "Total price"</td>
+                            {% else %}
+                                <td>i x Price</td>
+                            {% endif %}
+                            <td>{% widthratio i 1 "100"%}</td>
+                            {% if subsession.dims > 1 %}
+                                <td>i x "Total price" - {% widthratio i 1 "100"%}</td>
+                            {% else %}
+                                <td>i x Price</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
                 </tbody></table>
             </section>
             <section>
