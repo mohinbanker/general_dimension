@@ -30,7 +30,7 @@ class Constants(BaseConstants):
 
     #############################################################
     treatmentdims = [12, 32, 7]                                  
-    num_sellers = [3, 1, 1]                                     
+    num_sellers = [3, 2, 2]                                     
     num_buyers = [3, 1, 1]                                      
     practicerounds = [True, True, True]                         
     num_rounds_treatment = [1, 1, 1]                            
@@ -158,17 +158,22 @@ class Subsession(BaseSubsession):
             group_size = self.sellers + self.buyers
             new_matrix = np.array(matrix).reshape(num_players/group_size, group_size).tolist()
             self.set_group_matrix(new_matrix)
+            self.group_randomly()
 
         for p in self.get_players():
             # set player roles
             p.set_role()
+            # Players are sellers in the first practice round
             if self.block_new:
                 p.roledesc = "Seller"
                 p.rolenum = 1
+            # Players are buyers in the second practice round
             elif self.practiceround:
                 p.roledesc = "Buyer"
                 p.rolenum = 1
 
+        # Generate random bids and asks for practice rounds
+        # Code is executed before subsession starts so that players cannot refresh the page and get new bids/asks
         if self.practiceround:
             for player in self.get_players():
                 player.participant.vars["practice_asks" + str(self.round_number)] = []
@@ -204,11 +209,13 @@ class Group(BaseGroup):
     mkt_ask_stdev_min = models.FloatField(doc="Minimum of all asks standard deviations in a single group/market")
 
     def create_contract(self, bid, ask):
+        # Contracts are only saved in paid rounds
         contract = Contract(bid=bid, ask=ask, group=self)
         contract.save()
 
     def set_marketvars(self):
         # This function is called after all buyers and sellers have made their choices
+        # This function is only called in paid rounds
         contracts = Contract.objects.filter(group=self)
         asks = []
         stdevs = []
@@ -288,14 +295,6 @@ class Player(BasePlayer):
 
     # wait page game
     gamewait_numcorrect = models.IntegerField(default=0, doc="The number of words found by player in the word search")
-
-    # Practice round grouping
-    # buyer_in_practice = models.BooleanField(doc = "Player acted as a buyer in at least one practice round for this block")
-    # seller_in_practice = models.BooleanField(doc = "Player acted as a seller in at least one practice round for this block")
-    # role_in_practice = models.BooleanField(doc = "Player was placed in a practice round group for this round")
-
-    practice_asks = []
-    practice_bids = []
 
     def create_bid(self, bid_total, pricedims):
         """ Creates a bid row associated with the buyer after the buyer makes his/her choice """
@@ -426,6 +425,7 @@ class PriceDim(Model):   # our custom model inherits from Django's base class "M
     bid = ForeignKey(Bid, blank=True, null=True)
 
 
+# Helper function for get_autopricedims function
 def get_stdev(ask_total, numdims):
     """
         Using the first experiment, estimated the stdev/max(stdev). This was necessary because in the first experiment
@@ -438,28 +438,23 @@ def get_stdev(ask_total, numdims):
             Therefore, we return the max(stdev, 1)
     """
     if ask_total == 0:
-        # stupid special cases
         return (0, 0, 0)
 
     ask_avg = 1.* ask_total/numdims
     ask_log = math.log(ask_total)
 
-    # if numdims == 8:
-    #     stdev_util = math.exp( -0.3411935 + 0.1052575*ask_log ) - 1
-    # elif numdims == 16:
-    #     stdev_util = math.exp( -0.0270693 + .0509434*ask_log ) - 1
-    # else:
-    #     raise ValueError('{} dimensions not supported'.format(numdims))
-
     # Fit a linear regression so there is a common stdev_util function for all price dimensions
+    # The larger the ask totals, the larger the difference between the original stdev_util and the interpolated stdev_util 
     stdev_util = -0.2287798 + 0.00003303819*ask_total + 0.1734626/ask_total + 0.09059366*math.log(ask_total)
 
-    stdev_max = math.sqrt((math.pow(ask_total - ask_avg, 2) + math.pow(0 - ask_avg, 2)*(numdims - 1))/numdims)
+    stdev_max = math.sqrt((math.pow(ask_total - ask_avg, 2) + math.pow(ask_avg, 2)*(numdims - 1))/numdims)
     stdev = stdev_max*stdev_util
 
     return (stdev_util, stdev_max, max(stdev, 1))
 
 
+# Function copied from utils.py to generate random sub-prices for practice rounds
+# Error occurs when utils.py is imported into models.py
 def get_autopricedims(ask_total, numdims):
     """
     :param ask_total: the total price set by the seller
@@ -501,7 +496,6 @@ def get_autopricedims(ask_total, numdims):
             # increment while staying in bounds
             dvalues[dim] = max(0, dvalues[dim] + increment)
             dvalues[dim] = min(Constants.maxprice, dvalues[dim])
-        # print(dvalues)
 
     # Now we get to our target by incrementing a randomly chosen subset of dims without replacement.
     #   This will distort the chosen stdev somewhat, but not a lot.
@@ -513,7 +507,6 @@ def get_autopricedims(ask_total, numdims):
         for dim in dims:
             dvalues[dim] = max(0, dvalues[dim] + increment)
             dvalues[dim] = min(Constants.maxprice, dvalues[dim])
-        # print(dvalues)
 
     return {
         'ask_total': ask_total,
