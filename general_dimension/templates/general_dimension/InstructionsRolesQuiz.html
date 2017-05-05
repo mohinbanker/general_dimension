@@ -60,7 +60,7 @@
         <div class="answer">
             <h2 class="correct">Correct!</h2>
             <h2 class="incorrect">The correct answer is: It depends.</h2>
-            <p>Since there are {{ subsession.sellers }} seller{{ subsession.sellers|pluralize }} in each group, there is no guarantee that a seller will sell an object &mdash; a higher price may lead buyers to buy from the other seller.</p>
+            <p>Since there are {{ subsession.sellers }} seller{{ subsession.sellers|pluralize }} in each group, there is no guarantee that a seller will sell an object &mdash; a higher price may lead buyers to buy from {{ subsession.sellers|pluralize:"the ,an"}}other seller.</p>
             <p>However, if a seller does sell an object, then a higher price will earn the seller more tokens.</p>
         </div>
     </div>

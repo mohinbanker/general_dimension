@@ -75,7 +75,7 @@ class InstructionsSeller(Page):
             'num_other_sellers': self.subsession.sellers-1,
             'production_cost' : Constants.prodcost,
             'price_dims': range(1, self.subsession.dims + 1),
-            'seller_outcomes': range(2, self.subsession.buyers - 1)
+            'seller_outcomes': range(2, self.subsession.buyers + 1)
                 }
 
     def is_displayed(self):
@@ -116,25 +116,21 @@ class InstructionsRoundResults(Page):
     def vars_for_template(self):
         player = Player(roledesc="Seller", payoff_marginal=225, ask_total=325, numsold=1, rolenum=1)
 
-        # buyer_choices = []
-        # for i in range(self.subsession.buyers):
-        #     choice = [0] * self.subsession.sellers
-        #     if i == 0:
-        #         choice[i] = 1
-        #     else:
-        #         choice[i] = 1
-        #     buyer_choices.append(choice)
-        buyer_choices = list(zip(range(1, 3), [[1,0],[0,1]]))
+        choice = [1] + [0]*(self.subsession.sellers - 1)
+        buyer_choices = [choice] #list(zip(range(1, 3), [[1,0],[0,1]]))
+        for i in range(1, self.subsession.buyers):
+            buyer_choices.append(random.sample(choice, len(choice)))
+        buyer_choices = list(zip(range(1, self.subsession.buyers + 1), buyer_choices))
 
         return{
             "player": player,
             "subtotal": 225,
-            "prices": utils.get_example_prices(range(2), self.subsession.dims),
+            "prices": utils.get_example_prices(range(self.subsession.sellers), self.subsession.dims),
             "prodcost": 100,
             "benefit": 325,
-            "sellers": range(1, 3),
+            "sellers": range(1, self.subsession.sellers + 1),
             "buyer_choices": buyer_choices,
-            "totals": [325, 375]
+            "totals": [min(325 + i * 50, Constants.maxprice) for i in range(self.subsession.sellers)]
         }
 
 class InstructionsWaitGame(Page):

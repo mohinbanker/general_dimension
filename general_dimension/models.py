@@ -65,7 +65,7 @@ class Constants(BaseConstants):
     starting_tokens = maxprice
 
     # For convenience of testing the experience of players
-    show_instructions_admin = False # set false to not show any instructions whatsoever
+    show_instructions_admin = True # set false to not show any instructions whatsoever
 
 
 class Subsession(BaseSubsession):

@@ -54,17 +54,17 @@
                         </tr>
                         {% for i in seller_outcomes %}
                         <tr>
-                            <td>i</td>
+                            <td>{{ i }}</td>
                             {% if subsession.dims > 1 %}
-                                <td>i x "Total price"</td>
+                                <td>{{ i }} x "Total price"</td>
                             {% else %}
-                                <td>i x Price</td>
+                                <td>{{ i }} x Price</td>
                             {% endif %}
                             <td>{% widthratio i 1 "100"%}</td>
                             {% if subsession.dims > 1 %}
-                                <td>i x "Total price" - {% widthratio i 1 "100"%}</td>
+                                <td>{{ i }} x "Total price" - {% widthratio i 1 "100"%}</td>
                             {% else %}
-                                <td>i x Price</td>
+                                <td>{{ i }} x Price</td>
                             {% endif %}
                         </tr>
                         {% endfor %}
@@ -73,7 +73,7 @@
             <section>
                 <p>
                     {% if subsession.round_number == 1 %}
-                        Now we will go over how sellers set {{ subsession.dims | pluralize:"prices,sub-prices" }}.
+                        Now, we will go over how sellers set {{ subsession.dims | pluralize:"prices,sub-prices" }}.
                     {% endif %}
                     To the right is an example of a seller's interface. Feel free to enter prices there to see how it works.
                 </p>
@@ -84,7 +84,7 @@
                 <ol>
                     <li>{{ subsession.dims | pluralize:"Prices,Sub-prices" }} must be whole numbers (no decimals).</li>
                     <li>{{ subsession.dims | pluralize:"Prices,Sub-prices" }} cannot be negative.</li>
-                    <li>{{ subsession.dims | pluralize:"Prices,The total price (sum of sub-prices)" }} cannot exceed 800 tokens.</li>
+                    <li>{{ subsession.dims | pluralize:"Prices,The total price (sum of sub-prices)" }} cannot exceed {{ Constants.maxprice }} tokens.</li>
                     {% if subsession.dims > 1 %}
                         <li>You must enter values for all sub-prices.</li>
                     {% endif %}
