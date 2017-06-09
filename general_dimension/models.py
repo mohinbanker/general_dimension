@@ -29,11 +29,11 @@ class Constants(BaseConstants):
     """
 
     #############################################################
-    treatmentdims = [12, 32, 7]                                  
-    num_sellers = [3, 2, 2]                                     
-    num_buyers = [3, 1, 1]                                      
-    practicerounds = [True, True, True]                         
-    num_rounds_treatment = [1, 1, 1]                            
+    treatmentdims = [16]                                 
+    num_sellers = [1]                                    
+    num_buyers = [1]                                      
+    practicerounds = [False]                         
+    num_rounds_treatment = [1]                            
     #############################################################
     
 
@@ -63,9 +63,15 @@ class Constants(BaseConstants):
     maxprice = 800
     minprice = 0
     starting_tokens = maxprice
+    show_seller_timer = True
+    show_buyer_timer = True
+    show_results_timer = True
+    seller_timer = 60
+    buyer_timer = 60
+    results_timer = 30
 
     # For convenience of testing the experience of players
-    show_instructions_admin = True # set false to not show any instructions whatsoever
+    show_instructions_admin = False # set false to not show any instructions
 
 
 class Subsession(BaseSubsession):
@@ -143,8 +149,9 @@ class Subsession(BaseSubsession):
             Constants.show_instructions_admin else False
         self.show_instructions_practice = True if (self.practiceround and not self.round_number-1 in practice_rounds) \
             and Constants.show_instructions_admin else False
-        self.show_instructions_real = True if (self.realround and self.round_number - 1 in practice_rounds) \
-                                                  and Constants.show_instructions_admin else False
+        self.show_instructions_real = True if Constants.show_instructions_admin and (self.realround and 
+            (self.round_number - 1 in practice_rounds or self.treatment != self.in_round(self.round_number - 1).treatment)) \
+            else False
 
 
         num_players = len(self.get_players())
@@ -164,7 +171,7 @@ class Subsession(BaseSubsession):
             # set player roles
             p.set_role()
             # Players are sellers in the first practice round
-            if self.block_new:
+            if self.block_new and self.practiceround:
                 p.roledesc = "Seller"
                 p.rolenum = 1
             # Players are buyers in the second practice round
@@ -263,11 +270,11 @@ class Player(BasePlayer):
     roledesc = models.CharField(doc="The player's role description. E.g., 'Seller' or 'Buyer'")
 
     # Instruction Questions
-    basics_q1 = models.CharField()
-    roles_q1 = models.CharField()
-    roles_q2 = models.CharField()
-    seller_q1 = models.CharField()
-    buyer_q1 = models.CharField()
+    basics_q1 = models.CharField(doc = "Instructions quiz, basics")
+    roles_q1 = models.CharField(doc = "Instructions quiz, roles 1")
+    roles_q2 = models.CharField(doc = "Instructions quiz, roles 2")
+    seller_q1 = models.CharField(doc = "Instructions quiz, seller")
+    buyer_q1 = models.CharField(doc = "Instructions quiz, buyer")
 
     payoff_marginal  = models.CurrencyField(default=0, doc="Tracks player's earnings, ignoring endowments and ignoring practice-round status")
     payoff_interim = models.CurrencyField(default=0, doc="Player's earnings up to and including this round")

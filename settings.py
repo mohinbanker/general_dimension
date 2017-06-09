@@ -43,7 +43,7 @@ DATABASES = {
     #     'USER': 'otree_user',
     #     'PASSWORD': 'Pr3te$ting',
     #     'HOST': 'localhost',
-    #     'PORT': '8000'
+    #     'PORT': '5432'
     # }
 }
 
@@ -59,7 +59,8 @@ SENTRY_DSN = 'http://aa8f3376659444438933f0c0e9ca57c2:e6657515ec46456b9acbed3fd5
 # to DEMO. This will allow people to play in demo mode, but not access
 # the full admin interface.
 
-AUTH_LEVEL = environ.get('OTREE_AUTH_LEVEL')
+# AUTH_LEVEL = environ.get('OTREE_AUTH_LEVEL')
+AUTH_LEVEL = "STUDY"
 
 # setting for integration with AWS Mturk
 AWS_ACCESS_KEY_ID = environ.get('AWS_ACCESS_KEY_ID')
@@ -113,7 +114,7 @@ mturk_hit_settings = {
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = {
-    'real_world_currency_per_point': (1.00/700),
+    'real_world_currency_per_point': (1.00/550),
     'participation_fee': 5.00,
     'num_bots': 12,
     'doc': "",
@@ -172,7 +173,7 @@ SESSION_CONFIGS = [
             'general_dimension',
             'survey'
         ],
-        'participation_fee': 5,
+        'participation_fee': 10,
         'real_world_currency_per_point': (1.00/700),
         'date': "20170317",
         'time': "1430",

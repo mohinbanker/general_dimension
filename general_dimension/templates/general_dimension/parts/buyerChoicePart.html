@@ -25,6 +25,16 @@
             {% endfor %}
             </tr>
         {% endfor %}
+    <tr class = "controls field-contract_seller_rolenum">
+        <td>Choose:</td>
+        {% for i in sellers %}
+        <td>
+            <label><input type = "radio" required = "" name = "contract_seller_rolenum" value = {{ i|stringformat:"i"}}>
+                Seller {{ i }}
+            </label>
+        </td>
+        {% endfor %}
+    </tr>
     </tbody></table>
 {% else %}
     <table id = "prices">
@@ -36,7 +46,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr class = "one_dim">
                 {% for i, price_dim in prices %}
                 <td>
                     Price
@@ -50,10 +60,22 @@
                     {% endfor %}
                 {% endfor %}
             </tr>
+    <tr class = "controls field-contract_seller_rolenum">
+        <td>Choose:</td>
+        {% for i in sellers %}
+        <td>
+            <label><input type = "radio" required = "" name = "contract_seller_rolenum" value = {{ i|stringformat:"i"}}>
+                Seller {{ i }}
+            </label>
+        </td>
+        {% endfor %}
+    </tr>
     </tbody></table>
+
 {% endif %}
+<!--
 <div id="buyer-choice-radios" class="form-group required">
-    <!--<label for="id_contract_seller_rolenum" class="control-label">Choose a Seller</label>-->
+    #### <label for="id_contract_seller_rolenum" class="control-label">Choose a Seller</label>
     <div class="controls field-contract_seller_rolenum">
         {% for i in sellers %}
             <label><input type = "radio" required = "" name = "contract_seller_rolenum" value = {{ i|stringformat:"i"}}>
@@ -62,3 +84,4 @@
         {% endfor %}
     </div>
 </div>
+//-->

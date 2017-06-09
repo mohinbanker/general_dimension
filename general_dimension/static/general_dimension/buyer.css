@@ -6,12 +6,12 @@ section{
 
 /* General Buyer */
 table{
-    margin-left: 43px;
-    width: 265px;
+    margin-left: 20px;
+    width: 275px;
 }
 table th{
     white-space:nowrap;
-    font-size:13px;
+    font-size:11px;
     padding: 6px 6px 4px;
 }
 table th:first-child{
@@ -21,9 +21,6 @@ table th:first-child{
     font-size:11px;
 }
 
-.col:last-child{
-    margin-right: -43px;
-}
 td label{
     color: #888;
     font-size: 14px;
@@ -33,7 +30,7 @@ td label{
     text-align: right;
 }
 td{
-    padding: 4px .625em 1px;
+    padding: 4px 4px 1px;
 }
 td:first-child label{
     font-size:12.5px;
@@ -59,21 +56,31 @@ td:first-child label{
     position: relative;
     float: left;
     /*background-color: #bbb;*/
-    padding: 8px 5px;
-    border-left: 1px solid #5b616b;
+    padding: 8px 16px 8px 0;
+    border-right: 1px solid #ADDC91;
     cursor: pointer;
     font-size:19px;
     margin: 0;
     background-color: #DBEDD4;
+    color: black;
+    font-size: 16px;
+    width: 100px;
+    border-width: 0 1px;
 }
 .field-contract_seller_rolenum label:hover{
     /*background-color: #ccc;*/
     background-color: #ADDC91;
 }
-.field-contract_seller_rolenum label:first-child{
-    border:none;
+.field-contract_seller_rolenum td{
+    padding: 0;
 }
 
 p{
     min-width: 405px;
+}
+tr:last-child td:nth-child(2) label{
+    border-left: 1px solid #ADDC91;
+}
+tr.one_dim td{
+    padding: 8px 4px 6px;
 }

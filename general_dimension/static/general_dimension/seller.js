@@ -4,8 +4,8 @@ var resultHandlerManual = function(result) {
     // Do NOT over-write the sub-price fields as this causes unwanted behavior if there is network latency
 
     // Updating via JS instead to avoid race conditions
-    //$("#id_ask_total").val(result.ask_total); // updating via js first
-    //$("#id_ask_stdev").val(result.ask_stdev);
+    $("#id_ask_total").val(result.ask_total); // updating via js first
+    $("#id_ask_stdev").val(result.ask_stdev);
 };
 var resultHandlerAuto = function(result) {
     // Over-writing user-input to enforce consistency.  The only reason this should ever be different
@@ -23,6 +23,7 @@ $(document).ready(function() {
     // the server from adding a row to the Ask database.
 
     // in utils.js
+    alert("You changed a price manually!!!");
     setup_csrf();
 
     $("#id_ask_total").focus(function(){

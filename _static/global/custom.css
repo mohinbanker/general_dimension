@@ -2,17 +2,53 @@
 .container{
     width: 800px;
 }
+#timer{
+    position: absolute;
+    top: -94px;
+    right: 0;
+    border: none;
+    width: 152px;
+    
+}
+#timer input{
+    float: left;
+    position: relative;
+    background: white;
+    font-size: 18px;
+    font-weight: lighter;
+    color: #333;
+    width: 23px;
+    line-height: 1.15;
+    border: none;
+
+}
+#timer label{
+    position: relative;
+    float: left;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.25;
+    margin-right: 4px;
+}
+#timer.timerFinished input{
+    color: red;
+    font-weight: normal;
+}
 .page-header{
     border:none;
-    margin: 40px 0 0;
+    margin: 40px 0 10px;
     padding: 10px 0 0;
 }
 .page-header h2{
     font-size: 2em;
-    margin: 20px 0 0;
+    margin: 0;
 }
 #otree-content{
     padding: 0;
+}
+.well{
+    /*delete to see debug stuff*/
+    display: none;
 }
 section{
     position: relative;
@@ -33,6 +69,14 @@ p{
     margin: 1em 0 .1em;
     clear: left;
 }
+.realround_instructions p{
+    font-size: 17px;
+    line-height: 1.45;
+}
+.realround_instructions li{
+    font-size: 15px;
+}
+
 .col p:first-child{
     margin-top: 1.2em;
 }
@@ -49,6 +93,7 @@ p + ul{
     position: relative;
     float: left;
     margin-top: 15px;
+    clear:both;
 }
 li{
     font-size: 17px;
@@ -194,14 +239,14 @@ form{
  * ===============================================*/
 .effect7
 {
-  	position:relative;
+    position:relative;
     -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
             box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
 .effect7:before, .effect7:after
 {
-	content:"";
+    content:"";
     position:absolute;
     z-index:-1;
     -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
@@ -216,7 +261,7 @@ form{
 }
 .effect7:after
 {
-	right:10px;
+    right:10px;
     left:auto;
     -webkit-transform:skew(8deg) rotate(3deg);
        -moz-transform:skew(8deg) rotate(3deg);
@@ -224,4 +269,3 @@ form{
          -o-transform:skew(8deg) rotate(3deg);
             transform:skew(8deg) rotate(3deg);
 }
-

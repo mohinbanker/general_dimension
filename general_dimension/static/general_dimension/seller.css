@@ -20,17 +20,22 @@ section{
 /* Seller Page Specific */
 
 /* General Seller */
+.form-group{
+    width: 162px;
+    position: relative;
+    float: left;
+}
 
 .seller_widget{
     float:left;
     position:relative;
-    width: 196px;
-    margin: 0 0 0 90px;
+    width: 298px;
+    margin: 19px 0 0 30px;
 }
 .seller_widget table{
     border-top: 1px solid #aaa;
-    margin-top: 5px;
-    width: 190px;
+    margin-top: 0px;
+    width: 135px;
 }
 
 .seller_widget tbody tr{
@@ -54,24 +59,24 @@ section{
 }
 
 .seller_widget th{
-    padding: 3px 0 0px 3px;
+    padding: 3px 0 2px 15px;
     font-size: 11px;
     font-weight: normal;
     border-bottom: 1px solid #ccc;
 }
 .seller_widget th:first-child{
     padding-left: 5px;
-    width: 63px;
+    width: 50px;
 }
 #distribute{
-    width: 190px;
+    width: 97px;
     height: 35px;
-    margin: 4px 0 0;
-    padding: 2px 0.875em 0;
+    margin: 4px 0 0 43px;
+    padding: 1px 0.875em 0;
     border-radius: .25em;
     border: none;
     background-color: #DBEDD4;
-    font-size: 18px
+    font-size: 16px
 }
 #distribute:hover{
     background-color: #ADDC91;
@@ -79,7 +84,7 @@ section{
 #id_ask_total{
     float: left;
     font-size: 20px;
-    height: 37px;
+    height: 35px;
     margin-right: 4px;
     padding: 3px 12px 0;
     width: 97px;
@@ -87,11 +92,12 @@ section{
 .control-label{
     float: left;
     font-size: 16px;
-    margin: 0 15px 0 0;
-    text-align: right;
-    width: 79px;
-    line-height: 1.2;
-    padding: 11px 0 0;
+    margin: 0;
+    text-align: left;
+    width: 43px;
+    line-height: 1.1;
+    padding: 2px 0 0;
+    height: 36px;
 }
 .pricedim{
     font-size: 16px;
@@ -119,12 +125,12 @@ section{
 /* One dim specific */
 .one_dim.seller_widget{
     width: 268px;
-    margin-left: 30px;
+    margin-left: 90px;
 }
 .one_dim #id_ask_total{
-    width: 170px;
-    height: 48px;
-    font-size: 24px;
+    width: 160px;
+    height: 45px;
+    font-size: 22px;
 }
 .one_dim .control-label{
     font-size: 21px;

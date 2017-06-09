@@ -86,7 +86,8 @@ class InstructionsSellerQuiz(Page):
     form_fields = ['seller_q1']
 
     def is_displayed(self):
-        return self.subsession.show_instructions_base or self.subsession.treatment_first_multiple
+        return self.subsession.show_instructions_base or \
+            (self.subsession.treatment_first_multiple and Constants.show_instructions_admin)
 
 
 class InstructionsBuyer(Page):
@@ -345,11 +346,13 @@ class RoundResults(Page):
         totals = []
         buyer_choices = []
 
-
         if self.subsession.practiceround:
             if self.player.roledesc == "Seller":
                 asks = self.participant.vars["practice_asks" + str(self.subsession.round_number)]
-                asks = [[pd.value for pd in self.player.get_pricedims()]] + asks
+                if self.subsession.dims > 1:
+                    asks = [[pd.value for pd in self.player.get_pricedims()]] + asks
+                else:
+                    asks = [[self.player.ask_total]] + asks
                 if len(asks) == self.subsession.sellers:
                     self.participant.vars["practice_asks" + str(self.subsession.round_number)] = asks
                 bids = self.participant.vars["practice_bids" + str(self.subsession.round_number)]

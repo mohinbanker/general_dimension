@@ -14,6 +14,7 @@ import six
 from otree.common_internal import get_models_module, app_name_format
 from collections import OrderedDict
 from statistics import pstdev
+import collections
 
 
 # HELPER METHODS
@@ -377,6 +378,7 @@ def export_combineddata():
     player_fns = get_field_names_for_csv(Player)
     pricedim_fns = ["p" + str(i) for i in range(1, maxdim + 1)]
     survey_fns = get_field_names_for_csv(PlayerSurvey)
+    survey_fns = [ fn for fn in survey_fns if not fn in ["payoff", "id_in_group"] ]
 
     headers = session_fns + metadata_fns + subsession_fns + group_fns + market_fns + participant_fns_d + player_fns + \
               pricedim_fns + survey_fns

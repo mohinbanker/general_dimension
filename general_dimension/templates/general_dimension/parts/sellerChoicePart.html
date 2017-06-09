@@ -7,23 +7,12 @@
 ">
     <input type="submit" style="display:none"></input>
     {% if subsession.dims > 1 %}
-        <div class="form-group required">
-            <label for="id_ask_total" class="control-label">Total price:</label>
+        <div class="form-group" required>
+            <label for="id_ask_total" class="control-label">Total Price:</label>
             <div class="controls  field-ask_total">
                 <input type="number" class="form-control" id="id_ask_total" max="800" min="0" required name="ask_total"></input>
             </div>
         </div>
-
-        <input type="button" value="Distribute" id="distribute"
-               data-subsession-id="{{ subsession.id }}"
-               data-group-id="{{ group.id }}"
-               data-session-id="{{ session.id}}"
-               data-player-id="{{ player.id_in_group }}"
-               data-auto-url="{% url 'autopricedims' %}"
-               data-manual-url="{% url 'manualpricedims' %}"
-               data-example="{{ example }}"
-        >
-        </input>
         <table>
             <thead>
                 <tr>

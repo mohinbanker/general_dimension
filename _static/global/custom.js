@@ -4,6 +4,26 @@ $(document).ready(function() {
     //
     document.oncontextmenu = document.body.oncontextmenu = function(){ return false; }
 
+    // Timer
+    //
+    var timer = $("#timer");
+    var tr = 999
+    var ticdown = function(){
+        if (tr <= 0){
+            timer.addClass("timerFinished");
+            timer.fadeToggle(1000);
+        } else {
+            tr = tr - 1;
+            $("input", timer).val(tr);
+        }
+        setTimeout(ticdown, 1000)
+    }
+    if ($("input", timer).length > 0){
+        tr = Number($("input", timer).val());
+        setTimeout(ticdown(1000));
+    }
+
+    //
     //
     // Section Nav
     //

@@ -226,7 +226,9 @@
           $('.selected').addClass('found').append("<span class='cover'></span>");
           wordList.splice(i,1);
           $('.' + curWord).addClass('wordFound');
-          wordFunc();
+          if(wordFunc){
+            wordFunc();
+          }
         }
 
         if (wordList.length === 0) {

@@ -60,7 +60,7 @@
                         <td>Total</td>
                         <td>{{ subtotal }}</td>
                         <td> x {{ player.numsold }}</td>
-                        <td>{{ player.payoff_marginal }}tokens</td>
+                        <td>{% widthratio subtotal 1 player.numsold %} tokens</td>
                     </tr>
             </tbody></table>
             {% endif %}
@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <div class="col">
+    <div class="col prices">
         <h2>Sellers' Prices</h2>
         <table>
             <thead>

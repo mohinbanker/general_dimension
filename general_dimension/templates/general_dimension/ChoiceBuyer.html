@@ -10,20 +10,28 @@
 {% endblock %}
 
 {% block content %}
-
+    {% if Constants.show_buyer_timer %}
+        <div id="timer">
+            <label>Time Remaining:</label>
+            <input type = "test" disabled = "disabled"
+                value="{{ Constants.buyer_timer }}">
+            </input>
+        </div>
+    {% endif %}
     <div class="col_container">
-        <div class="col">
-            <section>
+        <div class="col realround_instructions">
             <p>
-                You are buyer {{ player.rolenum }}. Please choose a seller to purchase an object from.
+                You are buyer {{ player.rolenum }}.
+            </p>
+            <p>
+                Please choose a seller to purchase an object from.
             </p>
             <p>As a reminder:</p>
             <ul>
                 <li>You will pay the {{ subsession.dims | pluralize:"price, sum of the sub-prices" }}.</li>
                 <li>You will exchange the object you buy for 800 tokens.</li>
             </ul>
-            <p>Press "Next" to submit your seller choice.</p>
-            </section>
+            <p>Press "Next" to submit your choice.</p>
             <nav 
                 {% if subsession.dims > 12 %} style="position:absolute; bottom:18px; right:50px;" {% endif %}
             >

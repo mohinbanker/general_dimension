@@ -10,10 +10,22 @@
 {% endblock %}
 
 {% block content %}
-
+    {% if Constants.show_seller_timer %}
+        <div id="timer">
+            <label>Time Remaining:</label>
+            <input type = "test" disabled = "disabled"
+                value="{{ Constants.seller_timer }}">
+            </input>
+        </div>
+    {% endif %}
     <div class="col_container">
-        <div class="col">
-            <p>You are seller {{ player.rolenum }}. Please choose your {{ subsession.dims | pluralize:"price,sub-prices" }}.</p>
+        <div class="col realround_instructions">
+            <p>
+                You are seller {{ player.rolenum }}.
+            </p>
+            <p>
+                Please choose your {{ subsession.dims | pluralize:"price,sub-prices" }}.
+            </p>
             <p>As a reminder:</p>
             <ul>
                 <li>{{ subsession.dims | pluralize:"Prices,Sub-prices" }} must be whole numbers (no decimals).</li>
@@ -25,24 +37,21 @@
                     <li>You must enter values for all sub-prices.</li>
                     <li>Choose a "Total price" and press "Distribute" to choose random sub-prices that sum to "Total price".</li>
                     <li>You can press "Distribute" as many times as you like.</li>
-                {% endif %}
-
-
-
-
                     <li>You can edit individual sub-prices even if you already pressed the distribute button.</li>
-                </ul>
+                {% endif %}
+            </ul>
             <p>Press "Next" to submit your prices.</p>
-            <nav>
-                <button class="a-btn next">Next</button>
-                <input type="submit"></input>
-            </nav>
+
         </div>
         <div class="col">
             {% include "general_dimension/parts/sellerChoicePart.html" with example="False" %}
         </div>
-    </div>
 
+    </div>
+    <nav>
+        <button class="a-btn next">Next</button>
+        <input type="submit"></input>
+    </nav>
     
 
 

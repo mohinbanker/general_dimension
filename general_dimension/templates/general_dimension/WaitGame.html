@@ -37,7 +37,9 @@
 {% block scripts %}
     <script type="text/javascript" src="{% static 'general_dimension/wordfind.js' %}"></script>
     <script type="text/javascript" src="{% static 'general_dimension/wordfindgame.js' %}"></script>
+    <script type="text/javascript" src="{% static 'general_dimension/waitgame.js' %}"></script>
     <script type="text/javascript" src="{% static 'general_dimension/utils.js' %}"></script>
+
 
     <script type="text/javascript">
 
@@ -85,7 +87,7 @@
             setup_csrf();
 
             var resultHandler = function(result) {
-//                console.log(result);
+                // console.log(result);
             };
 
             // When player manually changes a field, we want to send the whole list of fields back as a list
