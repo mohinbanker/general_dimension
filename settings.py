@@ -167,7 +167,7 @@ SESSION_CONFIGS = [
     {
         'name': 'general_dimension',
         'display_name': "General Dimension",
-        'num_demo_participants': 6,
+        'num_demo_participants': 12,
         'use_browser_bots' : False,
         'app_sequence': [
             'general_dimension',

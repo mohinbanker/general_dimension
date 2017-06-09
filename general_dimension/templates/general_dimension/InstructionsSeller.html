@@ -91,32 +91,16 @@
                 </ol>
 
             </section>
-            {% if subsession.dims > 1 %}
                 <section>
+                    {% if subsession.dims > 1 %}
                     <p>
-                        There are 2 ways to set sub-prices:
+                        You must set your sub-prices by typing values for each sub-price. The sum of the sub-prices will be shown in the "Total Price" box.
                     </p>
-                    <ol>
-                        <li>Enter a total price in the “Total price” box and then press the “Distribute” button.  This will enter random sub-prices that sum to your total price.</li>
-                        <li>Type values for each sub-price.</li>
-
-                    </ol>
+                    {% endif %}
                     <p>
-                        You can press the distribute button as many times as you like.
+                        Before continuing, please try to set the {{ subsession.dims | pluralize:"price,sub-prices" }} in the example interface to the right.
                     </p>
-
-                    <p>
-                        You can edit individual sub-prices even if you already pressed the distribute button.
-                    </p>
-
-
                 </section>
-            {% endif %}
-            <section>
-                <p>
-                    Before continuing, please try to set the {{ subsession.dims | pluralize:"price,sub-prices" }} in the example interface to the right.
-                </p>
-            </section>
             <nav>
                 <input type="button" class="a-btn next" value="Next"></input>
                 <input type="submit"></input>

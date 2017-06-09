@@ -9,6 +9,7 @@ from . import utils, export
 from otree.models.session import Session
 from django.contrib.auth.decorators import login_required
 import random
+import time
 
 
 # SPLASH PAGE AND PRA
@@ -296,6 +297,7 @@ class WaitSellersForSellers(WaitPage):
 
     def is_displayed(self):
         return self.player.roledesc == "Buyer"
+
 
 
 class WaitBuyersForSellers(WaitPage):

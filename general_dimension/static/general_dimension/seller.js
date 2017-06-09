@@ -6,6 +6,7 @@ var resultHandlerManual = function(result) {
     // Updating via JS instead to avoid race conditions
     //$("#id_ask_total").val(result.ask_total); // updating via js first
     //$("#id_ask_stdev").val(result.ask_stdev);
+    $(".next").prop("disabled", false);
 };
 var resultHandlerAuto = function(result) {
     // Over-writing user-input to enforce consistency.  The only reason this should ever be different
@@ -18,6 +19,11 @@ var resultHandlerAuto = function(result) {
     $("#id_ask_total").val(result.ask_total);
     $("#id_ask_stdev").val(result.ask_stdev);
 };
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 $(document).ready(function() {
     // when this is called from the instructions page, the example flag should be set to True, which should prevent
     // the server from adding a row to the Ask database.
@@ -62,6 +68,9 @@ $(document).ready(function() {
             url: $("#distribute").attr("data-manual-url"),
             data: data,
             dataType: "json",
+            beforeSend: function(){
+                $(".next").prop("disabled", true);
+            },
             success: resultHandlerManual
         });
     });
