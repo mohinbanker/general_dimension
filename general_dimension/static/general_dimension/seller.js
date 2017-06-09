@@ -20,10 +20,6 @@ var resultHandlerAuto = function(result) {
     $("#id_ask_stdev").val(result.ask_stdev);
 };
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 $(document).ready(function() {
     // when this is called from the instructions page, the example flag should be set to True, which should prevent
     // the server from adding a row to the Ask database.
