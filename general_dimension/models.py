@@ -40,24 +40,11 @@ class Constants(BaseConstants):
 
 
 
-    # Checking requirements
-    assert(len(treatmentdims) == len(num_sellers))
-    assert(len(treatmentdims) == len(num_buyers))
-    assert(len(treatmentdims) == len(practicerounds))
-    assert(len(treatmentdims) == len(num_rounds_treatment))
 
 
-    # Calculates the minimum number of practice rounds for each participant to experience both roles of each treatment
-    num_rounds_practice = []
-    for i in range(len(practicerounds)):
-        num_rounds_practice.append(2 * int(practicerounds[i]))
-    # for i in range(len(num_sellers)):
-    #     num_rounds_practice.append(math.ceil((num_sellers[i] + num_buyers[i])/(min(num_sellers[i], num_buyers[i]))) * int(practicerounds[i]))
-    
+
+    # OTHER PARAMETERS
     name_in_url = 'general_dimension'
-    players_per_group = None
-    num_treatments = len(treatmentdims)
-    num_rounds = sum(num_rounds_treatment) + sum(num_rounds_practice)
     prodcost = 100
     consbenefit = 800
     maxprice = 800
@@ -69,10 +56,21 @@ class Constants(BaseConstants):
     seller_timer = 60
     buyer_timer = 60
     results_timer = 30
-    distributeButton = True
+    show_instructions_admin = True # set false to not show any instructions
 
-    # For convenience of testing the experience of players
-    show_instructions_admin = False # set false to not show any instructions
+
+    num_rounds_practice = []
+    for i in range(len(practicerounds)):
+        num_rounds_practice.append(2 * int(practicerounds[i]))
+    players_per_group = None
+    num_treatments = len(treatmentdims)
+    num_rounds = sum(num_rounds_treatment) + sum(num_rounds_practice)
+
+    # Checking requirements
+    assert(len(treatmentdims) == len(num_sellers))
+    assert(len(treatmentdims) == len(num_buyers))
+    assert(len(treatmentdims) == len(practicerounds))
+    assert(len(treatmentdims) == len(num_rounds_treatment))
 
 
 class Subsession(BaseSubsession):
