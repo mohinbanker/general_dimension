@@ -29,11 +29,11 @@ class Constants(BaseConstants):
     """
 
     #############################################################
-    treatmentdims = [16]                                 
-    num_sellers = [1]                                    
-    num_buyers = [1]                                      
-    practicerounds = [False]                         
-    num_rounds_treatment = [1]                            
+    treatmentdims = [16, 1, 16, 1]                                 
+    num_sellers = [4, 4, 2, 2]                                    
+    num_buyers = [2, 2, 2, 2]                                      
+    practicerounds = [True, False, False, False]                         
+    num_rounds_treatment = [2, 2, 2, 2]                            
     #############################################################
     
 
@@ -69,6 +69,7 @@ class Constants(BaseConstants):
     seller_timer = 60
     buyer_timer = 60
     results_timer = 30
+    distributeButton = True
 
     # For convenience of testing the experience of players
     show_instructions_admin = False # set false to not show any instructions
