@@ -33,7 +33,7 @@ class Constants(BaseConstants):
     num_sellers = [1, 1, 1, 1]                                    
     num_buyers = [1, 1, 1, 1]                                      
     practicerounds = [False, False, False, False]                         
-    num_rounds_treatment = [2, 2, 2, 2]                            
+    num_rounds_treatment = [10, 2, 2, 2]                            
     #############################################################
     
 

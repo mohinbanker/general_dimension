@@ -1,5 +1,4 @@
 var ajaxRequestCount = 0;
-var nextButtonPressed = false;
 
 var resultHandlerManual = function(result) {
     // Do NOT over-write the sub-price fields as this causes unwanted behavior if there is network latency
@@ -105,23 +104,15 @@ $(document).ready(function() {
     $('.a-btn').click(function(){
         $(".a-btn").prop("disabled", true);
         $(".pricedim").prop("disabled", true);
-        nextButtonPressed = true;
-        if (ajaxRequestCount == 0){
-            console.log("Now proceeding to next page");
-            $(".a-btn").prop("disabled", false);
-            $(".pricedim").prop("disabled", false);
-            $("nav input[type='submit']").click();
-        }
     });
 })
 
 $(document).ajaxStop(function(){
     console.log("Finished AJAX requests")
-    if(ajaxRequestCount == 0 && nextButtonPressed){
-        console.log("Now proceeding to next page");
-        nextButtonPressed = false;
-        $("nav input[type='submit']").click();
+    if(ajaxRequestCount == 0){
+        console.log("Now proceeding to next page")
         $(".a-btn").prop("disabled", false);
         $(".pricedim").prop("disabled", false);
+        $("nav input[type='submit']").click();
     }
 })
