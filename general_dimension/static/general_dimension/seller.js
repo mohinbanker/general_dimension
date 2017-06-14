@@ -101,17 +101,18 @@ $(document).ready(function() {
         });
     });
 
-    $('.next').click(function(){
+    $('.a-btn').click(function(){
         $(".a-btn").prop("disabled", true);
         $(".pricedim").prop("disabled", true);
     });
 })
 
 $(document).ajaxStop(function(){
-    console.log("HELLOOOOOOOOOOOOOO")
-    if($(".a-btn").disabled){
+    console.log("Finished AJAX requests")
+    if(ajaxRequestCount == 0){
+        console.log("Now proceeding to next page")
         $(".a-btn").prop("disabled", false);
         $(".pricedim").prop("disabled", false);
-        $(".hidden_button").click();
+        $("nav input[type='submit']").click();
     }
 })
