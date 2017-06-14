@@ -141,22 +141,6 @@ SESSION_CONFIGS = [
     #     ],
     # },
     {
-        'name': 'duopoly_rep_treat',
-        'display_name': "Duopoly",
-        'num_demo_participants': 4,
-        'use_browser_bots' : True,
-        'app_sequence': [
-            'duopoly_rep_treat',
-            'survey'
-        ],
-        'treatmentorder': "3,1,2",
-        'participation_fee': 5,
-        'real_world_currency_per_point': (1.00/700),
-        'date': "20170317",
-        'time': "1430",
-        'experimenter_present': True, # set false to show "Next" button on ALL pages.
-    },
-    {
         'name': 'survey',
         'display_name': "Survey",
         'num_demo_participants': 4,
