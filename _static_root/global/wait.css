@@ -1,0 +1,28 @@
+body{
+    background:white;
+}
+
+div.panel-primary{
+    width: 800px;
+    margin: 100px auto 50px;
+    border: none;
+    box-shadow: none;
+}
+
+.panel-primary .panel-heading{
+    background: none;
+    color: black;
+    border: none;
+}
+.panel-title{
+    font-size: 1.5em;
+}
+
+p.body_text{
+    font-size: 14px;
+    margin:0;
+}
+
+.btn-info{
+    background-image: none;
+}

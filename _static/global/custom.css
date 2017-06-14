@@ -112,8 +112,11 @@ nav button, nav input[type="button"], nav input[type="submit"]{
     width: 152px;
     height: 40px;
 }
-nav .next{
+nav .next, nav .next_page{
     float: right;
+}
+nav .next, nav .prev{
+    transition: all .5s ease;
 }
 
 nav .dots{
