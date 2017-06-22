@@ -61,6 +61,10 @@ $(document).ready(function() {
         var data = get_metadata($("#distribute"));
         data.pricedims = pricedims.toString();
 
+        console.log(pricedims.toString());
+        console.log(data.pricedims.toString());
+        console.log("Changed a price dimension");
+
         $.ajax({
             type: "POST",
             url: $("#distribute").attr("data-manual-url"),
@@ -116,7 +120,7 @@ $(document).ready(function() {
 })
 
 $(document).ajaxStop(function(){
-    console.log("Finished AJAX requests")
+    console.log("Finished AJAX requests");
     if(ajaxRequestCount == 0 && nextButtonPressed){
         console.log("Now proceeding to next page");
         nextButtonPressed = false;

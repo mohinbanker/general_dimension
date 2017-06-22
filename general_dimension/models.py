@@ -29,11 +29,11 @@ class Constants(BaseConstants):
     """
 
     #############################################################
-    treatmentdims = [16, 1, 16, 1]                                 
-    num_sellers = [1, 1, 1, 1]                                    
-    num_buyers = [1, 1, 1, 1]                                      
-    practicerounds = [False, False, False, False]                         
-    num_rounds_treatment = [10, 2, 2, 2]                            
+    treatmentdims = [16]                                 
+    num_sellers = [1]                                    
+    num_buyers = [1]                                      
+    practicerounds = [False]                         
+    num_rounds_treatment = [10]                            
     #############################################################
     
 
@@ -148,8 +148,8 @@ class Subsession(BaseSubsession):
             Constants.show_instructions_admin else False
         self.show_instructions_practice = True if (self.practiceround and not self.round_number-1 in practice_rounds) \
             and Constants.show_instructions_admin else False
-        self.show_instructions_real = True if Constants.show_instructions_admin and (self.realround and 
-            (self.round_number - 1 in practice_rounds or self.treatment != self.in_round(self.round_number - 1).treatment)) \
+        self.show_instructions_real = True if Constants.show_instructions_admin and (self.realround and \
+            self.round_number != 1 and (self.round_number - 1 in practice_rounds or self.treatment != self.in_round(self.round_number - 1).treatment)) \
             else False
 
 

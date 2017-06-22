@@ -49,7 +49,7 @@ DATABASES = {
 }
 
 # Sentry Account Information
-SENTRY_DSN = 'http://aa8f3376659444438933f0c0e9ca57c2:e6657515ec46456b9acbed3fd557dee1@sentry.otree.org/58' 
+SENTRY_DSN = 'http://aa8f3376659444438933f0c0e9ca57c2:e6657515ec46456b9acbed3fd557dee1@sentry.otree.org/58'
 
 # AUTH_LEVEL:
 # If you are launching a study and want visitors to only be able to

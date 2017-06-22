@@ -111,15 +111,20 @@ def export_asks():
     # get all sessions, order them by label
     sessions = Session.objects.order_by("code")
     # loop through all sessions
+    print(sessions)
     for session in sessions:
-        # if not session.config["name"] == "duopoly_rep_treat":
-        #     continue
+        print("session")
+        if not session.config["name"] == "general_dimension":
+            continue
         session_list = list_from_obj(session_fns, session)
 
+        print(session_list)
         # loop through all subsessions (i.e. rounds) ordered by round number
-        subsessions = sorted(models.Subsession.objects.filter(session=session, treatment__gt=1),
+        subsessions = sorted(models.Subsession.objects.filter(session=session),
                              key=lambda x: x.round_number)
+        print(subsessions)
         for subsession in subsessions:
+            print("subsession")
             subsession_list = list_from_obj(subsession_fns, subsession)
 
             # loop through all groups ordered by ID
@@ -137,6 +142,8 @@ def export_asks():
                     asks=sorted(models.Ask.objects.filter(player=player), key=lambda x: x.id)
                     for ask in asks:
                         ask_list = list_from_obj(ask_fns, ask)
+                        print(ask_list)
+                        print(ask)
 
                         pds = sorted(ask.pricedim_set.all(), key=lambda x: x.dimnum)
                         pd_list = get_pd_list(pds, subsession.dims, maxdim)

@@ -61,9 +61,9 @@ $(document).ready(function() {
         var data = get_metadata($("#distribute"));
         data.pricedims = pricedims.toString();
 
-        console.log(pricedims.toString());
-        console.log(data.pricedims.toString());
-        console.log("Changed a price dimension");
+        console.log(pricedims.toString())
+        console.log(data.pricedims.toString())
+        console.log("Changed a price dimension")
 
         $.ajax({
             type: "POST",
