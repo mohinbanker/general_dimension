@@ -120,7 +120,7 @@ def export_asks():
 
         print(session_list)
         # loop through all subsessions (i.e. rounds) ordered by round number
-        subsessions = sorted(models.Subsession.objects.filter(session=session),
+        subsessions = sorted(models.Subsession.objects.filter(session=session, dims__gt = 1),
                              key=lambda x: x.round_number)
         print(subsessions)
         for subsession in subsessions:

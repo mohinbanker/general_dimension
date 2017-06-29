@@ -53,17 +53,13 @@ $(document).ready(function() {
             std += Math.pow(val - avg, 2) / pricedims.length;
         });
         std = Math.pow(std, 0.5) 
-;
+        ;
         // Set totals variables via js
         $("#id_ask_total").val(sum);
         $("#id_ask_stdev").val(std);
 
         var data = get_metadata($("#distribute"));
         data.pricedims = pricedims.toString();
-
-        console.log(pricedims.toString());
-        console.log(data.pricedims.toString());
-        console.log("Changed a price dimension");
 
         $.ajax({
             type: "POST",
@@ -106,13 +102,13 @@ $(document).ready(function() {
         });
     });
 
-    $('.a-btn').click(function(){
-        $(".a-btn").prop("disabled", true);
+    $('.next_page').click(function(){
+        $(".next_page").prop("disabled", true);
         $(".pricedim").prop("disabled", true);
         nextButtonPressed = true;
         if (ajaxRequestCount == 0){
             console.log("Now proceeding to next page");
-            $(".a-btn").prop("disabled", false);
+            $(".next_page").prop("disabled", false);
             $(".pricedim").prop("disabled", false);
             $("nav input[type='submit']").click();
         }
@@ -125,7 +121,7 @@ $(document).ajaxStop(function(){
         console.log("Now proceeding to next page");
         nextButtonPressed = false;
         $("nav input[type='submit']").click();
-        $(".a-btn").prop("disabled", false);
+        $(".next_page").prop("disabled", false);
         $(".pricedim").prop("disabled", false);
     }
 })

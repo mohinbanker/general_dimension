@@ -56,7 +56,7 @@ class Constants(BaseConstants):
     seller_timer = 60
     buyer_timer = 60
     results_timer = 30
-    show_instructions_admin = False # set false to not show any instructions
+    show_instructions_admin = True # set false to not show any instructions
 
 
     num_rounds_practice = []
